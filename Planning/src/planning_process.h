@@ -17,6 +17,7 @@
 #include <iostream>
 #include <cmath>
 #include "tools/QP.h"
+#include "scenario/scenario_manager.h"
 
 
 
@@ -125,6 +126,10 @@ private:
 
 
     Eigen::MatrixXd globalPath;
+
+    /********************ScenarioManager智能指针对象*****************************/
+    std::unique_ptr<ScenarioManager> scenario_manager_;
+    ScenarioState state_
 
 
 

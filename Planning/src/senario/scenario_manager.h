@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <Eigen/Dense>
+#include "tools/toolKits.h"
 
 // 新增状态枚举
 enum class ScenarioState
@@ -23,10 +24,27 @@ public:
     // 状态更新函数，根据最新信息判断状态跳转
     ScenarioState Update();
 
+    bool IsApproachingIntersection();//判断是否接近路口   
+
+    bool IsApproachingStopLine();//判断是否接近停止线
+
+    bool IsStraightForward();    // 判断是否直行状态
+
+    bool ChangeFirstRun(); // 改变first_run状态
+
+    // 使用内联函数返回车辆在frenet下的坐标和index
+    inline tool::frentPoint GetFrentPoint() { return FrentPoint_; }
+    // 使用内联函数返回车辆在全局坐标系下index
+    inline int GetIndex() { return index_; }
+
+
+
     // 重置状态
     void Reset();
 
 private:
+    // 第一次运行
+    bool first_run_ = true;
     // 当前状态
     ScenarioState state_;
 
@@ -38,4 +56,11 @@ private:
 
     // 存储障碍物信息（摄像头、雷达）
     Eigen::MatrixXd current_obs_lidar_;
+
+    // 车辆在全局路径下的坐标点
+    int index_ = 0;
+
+    // 车辆在frenet下的坐标
+    tool::frentPoint FrentPoint_;
+
 };

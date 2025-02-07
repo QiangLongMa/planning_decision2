@@ -274,12 +274,45 @@ void PlanningProcess::cam_callback(const std_msgs::msg::Float64MultiArray::Share
 // 速度挡位信息的回调函数，对速度挡位信息做初步处理
 void PlanningProcess::speed_gears_callback(const std_msgs::msg::Int64MultiArray::SharedPtr msg)
 {
-
 }
 
 // 局部路径生成函数
 bool PlanningProcess::get_local_path()
 {
+    //  创建scenarioManager智能指针对象
+    scenarioManager_ = std::make_unique<ScenarioManager>(car_, globalPtah, obs_lidar_);
+    state_ = scenarioManager->Update();
+    // 根据senum class ScenarioState
+    // {
+    //     INIT,     // 第一次执行，初始化状态
+    //     STRAIGHT, // 直行状态
+    //     TURN,     // 转弯状态
+    //     NEAR_STOP // 到达停止线附近
+    // };
+    // tate_状态执行不同的函数
+    switch (state_)
+    {
+    case ScenarioState::INIT:
+        // 创建一个FIrstRun类的智能指针
+        first_run_ = std::make_unique<FirstRun>(car_, globalPtah, obs_lidar_);
+        bool isFirstRunSuccessful = first_run_->Process();
+        break;
+    case ScenarioState::STRAIGHT:
+        // 创建一个LaneFollow类的智能指针
+        lane_follow_ = std::make_unique<LaneFollow>(car_, globalPtah, obs_lidar_);
+        bool isLaneFollowSuccessful = lane_follow_->Process();
+        break;
+    case ScenarioState::TURN:
+        // 创建一个ApproachingIntersection类的智能指针
+        approaching_intersection_ = std::make_unique<ApproachingIntersection>(car_, globalPtah, obs_lidar_);
+        bool isTurnSuccessful = approaching_intersection_->Process();
+        break;
 
+    case ScenarioState::NEAR_STOP:
+        // 创建一个NearStop类的智能指针
+        near_stop_ = std::make_unique<NearStop>(car_, globalPtah, obs_lidar_);
+        bool isNearStopSuccessful = near_stop_->Process();
+        break;
+    }
     return false;
 }
