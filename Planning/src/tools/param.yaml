@@ -1,0 +1,38 @@
+LANGE_NO_CHANGE:
+  l_cost: 10
+  dl_cost: 8.0e4
+  dll_cost: 10.0
+
+LANGE_CHANGE:
+  l_cost: 5.5
+  dl_cost: 8.0e4
+  dll_cost: 5.0
+
+dp_st:
+  exceed_speed_penalty: 1.0e6 #超速
+  default_speed_cost: 1.0e8 #巡航速度 
+  low_speed_penalty: 10.0 #低速 
+  reference_speed_penalty: 1.0e6  #参考速度的权重 
+  positive_jerk_coeff: 1.0
+  negative_jerk_coeff: 1.0
+  max_acceleration: 2.0 #2.0
+  max_deceleration: -2.0 #-2.5
+  max_jerk: 2.0
+  min_jerk: -2.0
+  accel_penalty: 1.0
+  decel_penalty: 1.0 #减速度惩罚 
+  accel_weight: 10.0
+  jerk_weight: 10.0
+
+piecewise_speed:
+  acc_weight: 1.0
+  jerk_weigth: 3.0
+  max_deceleration: -3
+  max_acceleration: 3.0
+  longitudinal_jerk_lower_bound: -2.0 #加加速度speed_qp_: 0
+  longitudinal_jerk_upper_bound: 2.0
+  ref_v_weight:  20
+  kappa_penalty_weight: 3000
+  ref_s_weight: 50
+
+

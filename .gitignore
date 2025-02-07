@@ -1,0 +1,28 @@
+# 编译生成的中间文件和目标文件
+*.o
+*.obj
+*.so
+*.dll
+*.dylib
+*.exe
+
+# CMake 生成的相关文件和目录
+/build/
+/devel/
+/install/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# ROS2 构建时产生的日志和其它文件
+*.log
+*.tmp
+
+# 编辑器、IDE 相关目录
+.vscode/
+.idea/
+
+# 临时文件
+*~
+*.swp
