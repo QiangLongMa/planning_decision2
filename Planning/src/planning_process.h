@@ -129,7 +129,12 @@ private:
 
     /********************ScenarioManager智能指针对象*****************************/
     std::unique_ptr<ScenarioManager> scenario_manager_;
-    ScenarioState state_
+    ScenarioState state_;
+    std::unique_ptr<FirstRun> first_run_;
+
+    /**********************局部路径***************************/
+    // 本周期局部路径
+    Eigen::MatrixXd optTrajxy;
 
 
 

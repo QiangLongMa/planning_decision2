@@ -276,11 +276,18 @@ void PlanningProcess::speed_gears_callback(const std_msgs::msg::Int64MultiArray:
 {
 }
 
-// 局部路径生成函数
+/**
+ * @brief 获取局部路径生成情况
+ *
+ * 该函数根据当前的状态生成局部路径，并发送给控制端
+ *
+ * @return true 生成路径成功
+ * @return false 生成路径失败
+ */
 bool PlanningProcess::get_local_path()
 {
     // 如果 scenarioManager_ 不存在，则创建；否则更新数据
-    if (scenario_manager_ == nullptr)
+    if (!scenario_manager_)
     {
         scenarioManager_ = std::make_unique<ScenarioManager>(car_, globalPath, obs_lidar);
     }
@@ -289,6 +296,7 @@ bool PlanningProcess::get_local_path()
         scenarioManager_->UpdateData(car_, globalPath, obs_lidar);
     }
     state_ = scenarioManager->Update();
+
     // 根据senum class ScenarioState
     // {
     //     INIT,     // 第一次执行，初始化状态
@@ -300,30 +308,76 @@ bool PlanningProcess::get_local_path()
     switch (state_)
     {
     case ScenarioState::INIT:
-        // 创建一个FIrstRun类的智能指针
-        first_run_ = std::make_unique<FirstRun>(car_, globalPtah, obs_lidar_);
+    {
+        // 创建 FirstRun 类的智能指针
+        first_run_ = std::make_unique<FirstRun>(car_, globalPath, obs_lidar);
+        // 进行决策
+        first_run_->MakeDecision();
+        // 规划路径
         bool isFirstRunSuccessful = first_run_->Process();
         if (isFirstRunSuccessful)
         {
             scenarioManager_->ChangeFirstRun();
+            // 获取路径
+            optTrajxy = first_run_->getlocalpath();
+            // 发送给控制端
+            timer_local_callback_to_control(); // TODO: 补充发送控制端的逻辑
+            return true;
         }
-        
         break;
+    }
     case ScenarioState::STRAIGHT:
-        // 创建一个LaneFollow类的智能指针
-        lane_follow_ = std::make_unique<LaneFollow>(car_, globalPtah, obs_lidar_);
+    {
+        // 创建 LaneFollow 类的智能指针
+        lane_follow_ = std::make_unique<LaneFollow>(car_, globalPath, obs_lidar);
+        // 进行决策
+        lane_follow_->MakeDecision();
         bool isLaneFollowSuccessful = lane_follow_->Process();
+        if (isLaneFollowSuccessful)
+        {
+            // 获取路径
+            optTrajxy = lane_follow_->getlocalpath();
+            // 发送给控制端
+            timer_local_callback_to_control();
+            return true;
+        }
         break;
+    }
     case ScenarioState::TURN:
-        // 创建一个ApproachingIntersection类的智能指针
-        approaching_intersection_ = std::make_unique<ApproachingIntersection>(car_, globalPtah, obs_lidar_);
+    {
+        // 创建 ApproachingIntersection 类的智能指针
+        approaching_intersection_ = std::make_unique<ApproachingIntersection>(car_, globalPath, obs_lidar);
+        // 进行决策
+        approaching_intersection_->MakeDecision();
         bool isTurnSuccessful = approaching_intersection_->Process();
+        if (isTurnSuccessful)
+        {
+            // 获取路径
+            optTrajxy = approaching_intersection_->getlocalpath();
+            // 发送给控制端
+            timer_local_callback_to_control();
+            return true;
+        }
         break;
-
+    }
     case ScenarioState::NEAR_STOP:
-        // 创建一个NearStop类的智能指针
-        near_stop_ = std::make_unique<NearStop>(car_, globalPtah, obs_lidar_);
+    {
+        // 创建 NearStop 类的智能指针
+        near_stop_ = std::make_unique<NearStop>(car_, globalPath, obs_lidar);
+        // 进行决策
+        near_stop_->MakeDecision();
         bool isNearStopSuccessful = near_stop_->Process();
+        if (isNearStopSuccessful)
+        {
+            // 获取路径
+            optTrajxy = near_stop_->getlocalpath();
+            // 发送给控制端
+            timer_local_callback_to_control(); // TODO: 补充发送控制端的逻辑
+            return true;
+        }
+        break;
+    }
+    default:
         break;
     }
     return false;

@@ -3,6 +3,7 @@
 #include <vector>
 #include <Eigen/Dense>
 #include "tools/toolKits.h"
+#include "scenario_tools.h"
 
 // 新增状态枚举
 enum class ScenarioState
