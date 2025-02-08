@@ -279,8 +279,15 @@ void PlanningProcess::speed_gears_callback(const std_msgs::msg::Int64MultiArray:
 // 局部路径生成函数
 bool PlanningProcess::get_local_path()
 {
-    //  创建scenarioManager智能指针对象
-    scenarioManager_ = std::make_unique<ScenarioManager>(car_, globalPtah, obs_lidar_);
+    // 如果 scenarioManager_ 不存在，则创建；否则更新数据
+    if (scenario_manager_ == nullptr)
+    {
+        scenarioManager_ = std::make_unique<ScenarioManager>(car_, globalPath, obs_lidar);
+    }
+    else
+    {
+        scenarioManager_->UpdateData(car_, globalPath, obs_lidar);
+    }
     state_ = scenarioManager->Update();
     // 根据senum class ScenarioState
     // {
@@ -296,6 +303,11 @@ bool PlanningProcess::get_local_path()
         // 创建一个FIrstRun类的智能指针
         first_run_ = std::make_unique<FirstRun>(car_, globalPtah, obs_lidar_);
         bool isFirstRunSuccessful = first_run_->Process();
+        if (isFirstRunSuccessful)
+        {
+            scenarioManager_->ChangeFirstRun();
+        }
+        
         break;
     case ScenarioState::STRAIGHT:
         // 创建一个LaneFollow类的智能指针

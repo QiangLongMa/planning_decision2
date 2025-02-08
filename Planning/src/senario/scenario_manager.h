@@ -24,6 +24,9 @@ public:
     // 状态更新函数，根据最新信息判断状态跳转
     ScenarioState Update();
 
+    // 更新实时数据，但不重置 state_ 状态
+    void UpdateData(const Eigen::VectorXd &car, const Eigen::MatrixXd &globalPath, const Eigen::MatrixXd &obs_lidar);
+
     bool IsApproachingIntersection();//判断是否接近路口   
 
     bool IsApproachingStopLine();//判断是否接近停止线

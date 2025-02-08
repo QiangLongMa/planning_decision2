@@ -1,4 +1,5 @@
 #include "scenario_manager.h"
+#include <algorithm>
 
 ScenarioManager::ScenarioManager(const Eigen::VectorXd &car, const Eigen::MatrixXd &globalPath, const Eigen::MatrixXd &obs_lidar) : state_(ScenarioState::INIT), current_car_(car), current_globalPath_(globalPath), current_obs_lidar_(obs_lidar)
 {
@@ -51,6 +52,14 @@ ScenarioState ScenarioManager::Update()
     }
 
     return state_;
+}
+
+void ScenarioManager::UpdateData(const Eigen::VectorXd &car, const Eigen::MatrixXd &globalPath, const Eigen::MatrixXd &obs_lidar)
+{
+    // 只更新实时数据，保持内部的状态 state_ 不变
+    current_car_ = car;
+    current_globalPath_ = globalPath;
+    current_obs_lidar_ = obs_lidar;
 }
 
 bool ScenarioManager::IsApproachingIntersection()
