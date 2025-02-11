@@ -19,7 +19,7 @@ void FirstRun::Straight()
     double deltaYAW = tool::normalizeAngle(tool::d2r(car_(3)) - globalPath(3, first_run_index));
     double dl = (1 - globalPath(4, first_run_index) * FrentPoint_.d) * tan(deltaYAW);
     double ptr_kappa = globalPath(4, first_run_index) / (1 - globalPath(4, first_run_index) * FrentPoint_.d);
-    ddl = localMtah::Caldll(FrentPoint_.d, dl, globalPath(5, first_run_index), globalPath(4, first_run_index), deltaYAW, ptr_kappa);
+    ddl = localMath::Caldll(FrentPoint_.d, dl, globalPath(5, first_run_index), globalPath(4, first_run_index), deltaYAW, ptr_kappa);
     // 第一次运行时，只考虑直行  不考虑避障操作
     senarioTools::cartofrenet(car_, globalPath, index, FrentPoint_);
     // CalStartCarD(FrentPoint_.d, -1.5, start_l, end_l);

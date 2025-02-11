@@ -2,8 +2,8 @@
 #include <iostream>
 #include <Eigen/Dense>
 
-#include "tools/local_dp_qp.h"
-#include "tools/toolKits.h"
+#include "local_dp_qp.h"
+#include "toolKits.h"
 #include "scenario_tools.h"
 
 class Scenario
@@ -40,7 +40,7 @@ public:
     void RestFlags();
 
     // 获取本周期的局部路径optTrajxy
-    Eigen::MatrixXd getlocalpath() { return optTrajxy; }
+    inline Eigen::MatrixXd getlocalpath() const { return optTrajxy; }
 
 protected:
     Decisionflags Decisionflags_;
@@ -63,6 +63,6 @@ protected:
     int index = 0;
 
     //是否找到合适的局部路径 
-    int find_local_path_ = 0;
+    bool find_local_path_ = false;
 
 };

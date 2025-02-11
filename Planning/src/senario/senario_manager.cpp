@@ -67,7 +67,7 @@ bool ScenarioManager::IsApproachingIntersection()
     senarioTools::findClosestPoint(current_car_(0), current_car_(1), current_globalPath_, index); // 寻找此时车辆在全局路径的索引
     senarioTools::cartofrenet(current_car_, current_globalPath_, index, FrentPoint_);
     size_t end_index = std::min(index + 120, static_cast<int>(current_globalPath_.cols())); // 30m的距离
-    size_t start_index_ = std::max(static_cast<size_t>(0.0), start_index);                  // 5m
+    size_t start_index_ = std::max(static_cast<size_t>(0.0), static_cast<size_t>(index));                  // 5m
     for (size_t i = start_index_; i < end_index; ++i)
     {
         if (std::abs(current_globalPath_(4, i)) >= 0.03)
@@ -84,7 +84,7 @@ bool ScenarioManager::IsApproachingStopLine()
     senarioTools::findClosestPoint(current_car_(0), current_car_(1), current_globalPath_, index); // 寻找此时车辆在全局路径的索引
 
     // 车辆距离终点距离大于30
-    if (current_globalPath_(6, current_globalPath_.cols() - 1) - current_globalPath_(6, mindex) >= 30)
+    if (current_globalPath_(6, current_globalPath_.cols() - 1) - current_globalPath_(6, index) >= 30)
     {
         return false;
     }
@@ -100,7 +100,7 @@ bool ScenarioManager::IsStraightForward() // 判断是否直行状态，车辆30
     senarioTools::findClosestPoint(current_car_(0), current_car_(1), current_globalPath_, index); // 寻找此时车辆在全局路径的索引
     senarioTools::cartofrenet(current_car_, current_globalPath_, index, FrentPoint_);
     size_t end_index = std::min(index + 120, static_cast<int>(current_globalPath_.cols())); // 30m的距离
-    size_t start_index_ = std::max(static_cast<size_t>(0.0), start_index);                  // 5m
+    size_t start_index_ = std::max(static_cast<size_t>(0.0), static_cast<size_t>(index));                  // 5m
     for (size_t i = start_index_; i < end_index; ++i)
     {
         if (std::abs(current_globalPath_(4, i)) >= 0.03)

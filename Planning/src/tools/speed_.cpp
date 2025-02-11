@@ -8,7 +8,7 @@ speed_::speed_(){}
  * 3、计算更新CostTable， CalculateTotalCost()
  * 4、回溯，得到SpeedProfile
  * **************************************************************************/
-bool speed_::Search(double total_length_s_,std::vector<SpeedPoint> &speed_data,double init_point_v_,double init_point_a_,std::vector<SpeedDkappa> cruise_speed_,
+bool speed_::Search(double total_length_s_,std::vector<localMath::SpeedPoint> &speed_data,double init_point_v_,double init_point_a_,std::vector<localMath::SpeedDkappa> cruise_speed_,
                     std::vector<double>speed_limit_list_,std::vector<double> &speed_dkppa_,YAML::Node &config_){
   init_point_v = init_point_v_;// 初始的速度 
   init_point_a =  init_point_a_;
@@ -387,7 +387,7 @@ void speed_::CalculateCostAt(const std::shared_ptr<StGraphMessage> &msg){
  * 回溯，得到最优 speed_data
  * 
  * **********************************************************************************/
-bool speed_::RetrieveSpeedProfile(std::vector<SpeedPoint> &speed_data){
+bool speed_::RetrieveSpeedProfile(std::vector<localMath::SpeedPoint> &speed_data){
   
   double min_cost = std::numeric_limits<double>::max();
   StGraphPoint * best_end_pointss = nullptr;
@@ -501,10 +501,10 @@ bool speed_::RetrieveSpeedProfile(std::vector<SpeedPoint> &speed_data){
 
   
   // 回溯，得到最优的 speed_profile
-  std::vector<SpeedPoint> speed_profile;
+  std::vector<localMath::SpeedPoint> speed_profile;
   const StGraphPoint* cur_point = best_end_pointss;
   while (cur_point!=nullptr){//
-    SpeedPoint speed_point;
+    localMath::SpeedPoint speed_point;
     speed_point.s = cur_point->point().s;
     speed_point.t = cur_point->point().t;
     speed_profile.push_back(speed_point);

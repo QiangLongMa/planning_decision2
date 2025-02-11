@@ -1,5 +1,4 @@
-#ifndef HEADER_FILE_H
-#define HEADER_FILE_H
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -10,7 +9,7 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 
-namespace localMtah
+namespace localMath
 {
   struct SpeedPoint
   {
@@ -59,4 +58,3 @@ namespace localMtah
                   double &start_point_l, double &start_point_dl, double &start_point_ddl);
   double Caldll(double l, double dl, double ref_dkappa, double ref_kappa, double delta, double ptr_kappa);
 } // namespace localMtah
-#endif

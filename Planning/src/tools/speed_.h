@@ -79,7 +79,7 @@ private:
   double init_point_a;
   double spatial_potential_penalty = 1e5;    // 终点权重
   double speed_limit;                        // 速度限制 后面应该要根据全局路径的曲率进行选择
-  std::vector<SpeedDkappa> car_cruise_speed; // 巡航速度 参考的速度
+  std::vector<localMath::SpeedDkappa> car_cruise_speed; // 巡航速度 参考的速度
   std::vector<double> speed_limit_list;
   std::vector<double> speed_dkppa;
 
@@ -107,10 +107,10 @@ public:
 
   void GetRowRange(const StGraphPoint &point, size_t *next_highest_row, size_t *next_lowest_row);
 
-  bool RetrieveSpeedProfile(std::vector<SpeedPoint> &speed_data);
+  bool RetrieveSpeedProfile(std::vector<localMath::SpeedPoint> &speed_data);
 
   speed_();
 
-  bool Search(double total_length_s_, std::vector<SpeedPoint> &speed_data, double init_point_v_, double init_point_a_, std::vector<SpeedDkappa> cruise_speed_,
+  bool Search(double total_length_s_, std::vector<localMath::SpeedPoint> &speed_data, double init_point_v_, double init_point_a_, std::vector<localMath::SpeedDkappa> cruise_speed_,
               std::vector<double> speed_limit_list_, std::vector<double> &speed_dkppa_, YAML::Node &config_);
 };

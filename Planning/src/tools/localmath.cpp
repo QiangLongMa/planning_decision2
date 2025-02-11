@@ -1,5 +1,5 @@
 #include "localmath.h"
-namespace localMtah
+namespace localMath
 {
   double NormalizeAngle(double angle)
   {
@@ -63,8 +63,8 @@ namespace localMtah
     return v;
   }
 
-  bool EvaluateByTime(const double t, std::vector<SpeedPoint> &speed_data,
-                      SpeedPoint &speed_point)
+  bool EvaluateByTime(const double t, std::vector<localMath::SpeedPoint> &speed_data,
+    localMath::SpeedPoint &speed_point)
   {
     if (speed_data.size() < 2)
     {
@@ -75,7 +75,7 @@ namespace localMtah
     //    return false;
     //  }
     // 在speed_data容器中查找第一个不小于t的值
-    auto comp = [](const SpeedPoint &sp, const double t)
+    auto comp = [](const localMath::SpeedPoint &sp, const double t)
     {
       return sp.t < t;
     };
@@ -103,7 +103,7 @@ namespace localMtah
     return true;
   }
 
-  void EvaluateByS(std::vector<std::vector<double>> &vec, const double s, SpeedPoint &speed_point)
+  void EvaluateByS(std::vector<std::vector<double>> &vec, const double s, localMath::SpeedPoint &speed_point)
   {
     auto comp = [](const std::vector<double> &sp, const double s)
     {
@@ -138,10 +138,10 @@ namespace localMtah
   }
 
   // 获取限速
-  double GetSpeedLimitByS(std::vector<SpeedLimit> &speedlimit, double s)
+  double GetSpeedLimitByS(std::vector<localMath::SpeedLimit> &speedlimit, double s)
   {
     double v;
-    auto compar_s = [](const SpeedLimit &speedlimit, const double &s)
+    auto compar_s = [](const localMath::SpeedLimit &speedlimit, const double &s)
     {
       return speedlimit.s < s;
     };
@@ -165,10 +165,10 @@ namespace localMtah
     }
   }
   // 获取当前的目标车速
-  double GetCuriseSpeedByS(std::vector<SpeedDkappa> &curise_speed, double s)
+  double GetCuriseSpeedByS(std::vector<localMath::SpeedDkappa> &curise_speed, double s)
   {
     double v;
-    auto compar_s = [](const SpeedDkappa &curise_speed, const double &s)
+    auto compar_s = [](const localMath::SpeedDkappa &curise_speed, const double &s)
     {
       return curise_speed.s < s;
     };
@@ -234,3 +234,5 @@ namespace localMtah
     return a + b * c;
   }
 }
+
+

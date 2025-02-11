@@ -10,14 +10,19 @@
 #include "std_msgs/msg/int32.hpp"
 #include "std_msgs/msg/float64.hpp"
 #include "std_msgs/msg/int64_multi_array.hpp"
-#include "tools/toolKits.h"
-#include "tools/Calobs.h"
+#include "toolKits.h"
+#include "Calobs.h"
 #include "tools/frame.h"
 #include <vector>
 #include <iostream>
 #include <cmath>
-#include "tools/QP.h"
-#include "scenario/scenario_manager.h"
+#include "QP.h"
+#include "scenario_manager.h"
+#include "scenario.h"
+#include "first_run.h"
+#include "lane_follow.h"
+#include "approaching_intersection.h"
+#include "near_stop.h"
 
 
 
@@ -58,6 +63,9 @@ private:
     void SendControlObs(std::vector<obses_sd> &obses);
     void SendHmiObs(std::vector<Eigen::VectorXd> &obses);
     void SendGlobalObses(std::vector<Eigen::VectorXd> &obses);
+
+     // 系统控制函数
+     void timer_local_callback_to_control();
 
 
 private:
@@ -101,6 +109,8 @@ private:
     // 系统每隔100ms执行一次局部路径生成主函数
     int Slowdowntimethreshold = 100;
 
+   
+
 
     /************************gps信号*****************************/
     double gpsx_ = 0.0;
@@ -130,7 +140,7 @@ private:
     /********************ScenarioManager智能指针对象*****************************/
     std::unique_ptr<ScenarioManager> scenario_manager_;
     ScenarioState state_;
-    std::unique_ptr<FirstRun> first_run_;
+    std::unique_ptr<Scenario> scenario_;
 
     /**********************局部路径***************************/
     // 本周期局部路径

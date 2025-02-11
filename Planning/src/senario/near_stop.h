@@ -2,11 +2,11 @@
 #include "scenario.h"
 
 
-class ApproachingIntersection : public Scenario
+class NearStop : public Scenario
 {
 public:
     // 定义构造函数，同时传入父类构造函数需要的参数
-    ApproachingIntersection(const Eigen::VectorXd &car, const Eigen::MatrixXd &globalPath, const Eigen::MatrixXd &obs_lidar);
+    NearStop(const Eigen::VectorXd &car, const Eigen::MatrixXd &globalPath, const Eigen::MatrixXd &obs_lidar);
     void Straight() override;
     void AvoidObstacle() override;
     void Overtake() override;

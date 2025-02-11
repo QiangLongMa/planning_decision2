@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <Eigen/Dense>
-#include "tools/toolKits.h"
+#include "toolKits.h"
 #include "scenario_tools.h"
 
 // 新增状态枚举
@@ -37,9 +37,9 @@ public:
     bool ChangeFirstRun(); // 改变first_run状态
 
     // 使用内联函数返回车辆在frenet下的坐标和index
-    inline tool::frentPoint GetFrentPoint() { return FrentPoint_; }
+    inline tool::frentPoint GetFrentPoint() const { return FrentPoint_; }
     // 使用内联函数返回车辆在全局坐标系下index
-    inline int GetIndex() { return index_; }
+    inline int GetIndex() const { return index; }
 
 
 
@@ -62,7 +62,7 @@ private:
     Eigen::MatrixXd current_obs_lidar_;
 
     // 车辆在全局路径下的坐标点
-    int index_ = 0;
+    int index = 0;
 
     // 车辆在frenet下的坐标
     tool::frentPoint FrentPoint_;

@@ -276,6 +276,11 @@ void PlanningProcess::speed_gears_callback(const std_msgs::msg::Int64MultiArray:
 {
 }
 
+// 控制函数编写
+void PlanningProcess::timer_local_callback_to_control()
+{
+}
+
 /**
  * @brief 获取局部路径生成情况
  *
@@ -289,13 +294,13 @@ bool PlanningProcess::get_local_path()
     // 如果 scenarioManager_ 不存在，则创建；否则更新数据
     if (!scenario_manager_)
     {
-        scenarioManager_ = std::make_unique<ScenarioManager>(car_, globalPath, obs_lidar);
+        scenario_manager_ = std::make_unique<ScenarioManager>(car_, globalPath, obs_lidar_);
     }
     else
     {
-        scenarioManager_->UpdateData(car_, globalPath, obs_lidar);
+        scenario_manager_->UpdateData(car_, globalPath, obs_lidar_);
     }
-    state_ = scenarioManager->Update();
+    state_ = scenario_manager_->Update();
 
     // 根据senum class ScenarioState
     // {
@@ -310,16 +315,16 @@ bool PlanningProcess::get_local_path()
     case ScenarioState::INIT:
     {
         // 创建 FirstRun 类的智能指针
-        first_run_ = std::make_unique<FirstRun>(car_, globalPath, obs_lidar);
+        scenario_ = std::make_unique<FirstRun>(car_, globalPath, obs_lidar_, gpsA_);
         // 进行决策
-        first_run_->MakeDecision();
+        scenario_->MakeDecision();
         // 规划路径
-        bool isFirstRunSuccessful = first_run_->Process();
+        bool isFirstRunSuccessful = scenario_->Process();
         if (isFirstRunSuccessful)
         {
-            scenarioManager_->ChangeFirstRun();
+            scenario_manager_->ChangeFirstRun();
             // 获取路径
-            optTrajxy = first_run_->getlocalpath();
+            optTrajxy = scenario_->getlocalpath();
             // 发送给控制端
             timer_local_callback_to_control(); // TODO: 补充发送控制端的逻辑
             return true;
@@ -329,14 +334,14 @@ bool PlanningProcess::get_local_path()
     case ScenarioState::STRAIGHT:
     {
         // 创建 LaneFollow 类的智能指针
-        lane_follow_ = std::make_unique<LaneFollow>(car_, globalPath, obs_lidar);
+        scenario_ = std::make_unique<LaneFollowScenario>(car_, globalPath, obs_lidar_);
         // 进行决策
-        lane_follow_->MakeDecision();
-        bool isLaneFollowSuccessful = lane_follow_->Process();
+        scenario_->MakeDecision();
+        bool isLaneFollowSuccessful = scenario_->Process();
         if (isLaneFollowSuccessful)
         {
             // 获取路径
-            optTrajxy = lane_follow_->getlocalpath();
+            optTrajxy = scenario_->getlocalpath();
             // 发送给控制端
             timer_local_callback_to_control();
             return true;
@@ -346,14 +351,14 @@ bool PlanningProcess::get_local_path()
     case ScenarioState::TURN:
     {
         // 创建 ApproachingIntersection 类的智能指针
-        approaching_intersection_ = std::make_unique<ApproachingIntersection>(car_, globalPath, obs_lidar);
+        scenario_ = std::make_unique<ApproachingIntersection>(car_, globalPath, obs_lidar_);
         // 进行决策
-        approaching_intersection_->MakeDecision();
-        bool isTurnSuccessful = approaching_intersection_->Process();
+        scenario_->MakeDecision();
+        bool isTurnSuccessful = scenario_->Process();
         if (isTurnSuccessful)
         {
             // 获取路径
-            optTrajxy = approaching_intersection_->getlocalpath();
+            optTrajxy = scenario_->getlocalpath();
             // 发送给控制端
             timer_local_callback_to_control();
             return true;
@@ -363,14 +368,14 @@ bool PlanningProcess::get_local_path()
     case ScenarioState::NEAR_STOP:
     {
         // 创建 NearStop 类的智能指针
-        near_stop_ = std::make_unique<NearStop>(car_, globalPath, obs_lidar);
+        scenario_ = std::make_unique<NearStop>(car_, globalPath, obs_lidar_);
         // 进行决策
-        near_stop_->MakeDecision();
-        bool isNearStopSuccessful = near_stop_->Process();
+        scenario_->MakeDecision();
+        bool isNearStopSuccessful = scenario_->Process();
         if (isNearStopSuccessful)
         {
             // 获取路径
-            optTrajxy = near_stop_->getlocalpath();
+            optTrajxy = scenario_->getlocalpath();
             // 发送给控制端
             timer_local_callback_to_control(); // TODO: 补充发送控制端的逻辑
             return true;

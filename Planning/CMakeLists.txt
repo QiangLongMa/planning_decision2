@@ -37,29 +37,28 @@ set(DEPENDS
   "ros2_path_interfaces"
 )
 
-# 将./src下的源文件编译成可执行文件
-file(GLOB ALL_SRCS "src/*.cpp")
+# 添加子目录（tools 和 senario）
+add_subdirectory(src/tools)
+add_subdirectory(src/senario)
 
-# 获取tools目录下的所有 .cpp 文件，并追加到 ALL_SRCS
-file(GLOB TOOL_SRCS "src/tools/*.cpp")
-list(APPEND ALL_SRCS ${TOOL_SRCS})
+# 构建主程序（假设 main.cpp 在 src 目录下）
+file(GLOB MAIN_SRCS "src/*.cpp")
 
-# 设置目标名称
 set(TARGET planning_main_node)
-
-# 添加可执行文件
-add_executable(${TARGET} ${ALL_SRCS})
+add_executable(${TARGET} ${MAIN_SRCS})
 
 # 包含Eigen3头文件
 target_include_directories(${TARGET} PRIVATE ${EIGEN3_INCLUDE_DIR})
-
 # 包含OpenCV头文件
 target_include_directories(${TARGET} PRIVATE ${OpenCV_INCLUDE_DIRS})
 target_include_directories(${TARGET} PRIVATE ${osqp_INCLUDE_DIRS} )
 target_include_directories(${TARGET} PRIVATE ${YAML_CPP_INCLUDE_DIR})
+# 
 
 
 # 链接库文件
+# 链接动态库（tools_lib 和 senario_lib）
+target_link_libraries(${TARGET} tools senario)
 target_link_libraries(${TARGET} ${OpenCV_LIBS})
 target_link_libraries(${TARGET}  osqp::osqp)
 target_link_libraries(${TARGET} yaml-cpp)

@@ -1,6 +1,7 @@
 #pragma once
 #include "scenario.h"
-#include "tools/localmath.h"
+#include "localmath.h"
+#include "QP.h"
 
 class FirstRun : public Scenario
 {
@@ -15,8 +16,13 @@ public:
     void MakeDecision() override;
 private:
     double gpsA;
-    double delta_l 
-    double target_v
-    double start_l 
-    double end_l 
-}
+    double delta_l;
+    double target_v;
+    double start_l;
+    double end_l;
+    double heading_time_;
+    double ddl;
+    /**************Calobs***************/
+    std::vector<obses_sd> obses_limit_SD; //在范围内的SD
+    std::vector<Eigen::VectorXd> GlobalcoordinatesystemObsesLimit;
+};

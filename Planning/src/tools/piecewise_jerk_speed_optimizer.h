@@ -8,6 +8,8 @@
 #include "piecewise_jerk_speed_problem.h"
 #include "yaml-cpp/yaml.h"
 #include "localmath.h"
+
+using namespace localMath;
 class PiecewiseJerkSpeedOptimizer
 {
 private:
