@@ -1,11 +1,11 @@
 #include "first_run.h"
 
 // 通过初始化列表调用父类 Scenario 的构造函数
-FirstRun::FirstRun(const Eigen::VectorXd &car,
-                   const Eigen::MatrixXd &globalPath,
-                   const Eigen::MatrixXd &obs_lidar,
-                   const double &gpsA_)
-    : Scenario(car, globalPath, obs_lidar), gpsA(gpsA_)
+FirstRun::FirstRun(const Eigen::VectorXd &car, const Eigen::MatrixXd &globalPath,
+                   const std::vector<obses_sd> &obses_limit_SD,
+                   const std::vector<Eigen::VectorXd> &GlobalcoordinatesystemObsesLimit,
+                   const double &gpsA)
+    : Scenario(car, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit, gpsA)
 {
 }
 
@@ -27,10 +27,11 @@ void FirstRun::Straight()
     target_v = 10;
     start_l = 1.5;
     end_l = -1.5;
-    LOCAL_.setPatam(gpsA, car_(2), FrentPoint_.s, FrentPoint_.d, dl, ddl, globalPath, 30, 10, index, obses_limit_SD, GlobalcoordinatesystemObsesLimit,
+    LOCAL_.setPatam(gpsA_, car_(2), FrentPoint_.s, FrentPoint_.d, dl, ddl, globalPath, 30, 10, index, obses_limit_SD, GlobalcoordinatesystemObsesLimit,
                     start_l, end_l, delta_l, target_v, -1.5, Decisionflags_, 0, true, false, 0, 0); // 最后一位时最近障碍物的位置
     find_local_path_ = LOCAL_.GetoptTrajxy(lastOptTrajxy, lastOptTrajsd);
-    if (find_local_path_){//找到路径再进行之后的操作 确保初始时找到局部路径
+    if (find_local_path_)
+    { // 找到路径再进行之后的操作 确保初始时找到局部路径
         optTrajsd.clear();
         optTrajxy.resize(lastOptTrajxy.rows(), lastOptTrajxy.cols());
         optTrajxy = lastOptTrajxy;
@@ -39,27 +40,27 @@ void FirstRun::Straight()
     }
 }
 
-void FirstRun::AvoidObstacle()
-{
-}
-
-void FirstRun::Overtake()
-{
-}
-
-void FirstRun::DecelerateFollow()
-{
-}
-
-void FirstRun::ReturnRightLane()
-{
-}
-
 void FirstRun::MakeDecision()
 {
     // 重置一下decision
     RestFlags();
     // 由于是fisrt run 场景比较简单，给直行的决策
     Decisionflags_.DriveStraightLineFlag = true;
+}
 
+bool FirstRun::Process()
+{
+
+    if (Decisionflags_.DriveStraightLineFlag)
+        Straight();
+
+    /****************************判断是否找到路径******************************************* */
+    if (find_local_path_)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

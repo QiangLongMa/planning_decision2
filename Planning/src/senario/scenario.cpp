@@ -5,40 +5,17 @@ constexpr int64_t NANOS_PER_SECOND = 1000000000; // 1e9
 // 使用初始化列表来初始化成员变量
 Scenario::Scenario(const Eigen::VectorXd &car,
                    const Eigen::MatrixXd &globalPath,
-                   const Eigen::MatrixXd &obs_lidar)
-    : car_(car),
-      globalPath(globalPath),
-      obs_lidar_(obs_lidar)
+                   const std::vector<obses_sd> &obses_limit_SD,
+                   const std::vector<Eigen::VectorXd> &GlobalcoordinatesystemObsesLimit,
+                   const double &gpsA) : car_(car),
+                   globalPath(globalPath),
+                   obses_limit_SD(obses_limit_SD),
+                   GlobalcoordinatesystemObsesLimit(GlobalcoordinatesystemObsesLimit),
+                   gpsA_(gpsA)
 {
 }
 
-bool Scenario::Process()
-{
-    if (Decisionflags_.DriveStraightLineFlag)
-        Straight();
 
-    else if (Decisionflags_.ObstacleAvoidanceFlag)
-        AvoidObstacle();
-
-    else if (Decisionflags_.DecelerateFlag)
-        DecelerateFollow();
-
-    else if (Decisionflags_.Overtakinginlaneflag)
-        Overtake();
-
-    else if (Decisionflags_.righttoleftlane)
-        ReturnRightLane();
-    
-    /****************************判断是否找到路径******************************************* */
-    if (find_local_path_)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
 
 double Scenario::Time()
 {

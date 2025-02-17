@@ -315,7 +315,7 @@ bool PlanningProcess::get_local_path()
     case ScenarioState::INIT:
     {
         // 创建 FirstRun 类的智能指针
-        scenario_ = std::make_unique<FirstRun>(car_, globalPath, obs_lidar_, gpsA_);
+        scenario_ = std::make_unique<FirstRun>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit , gpsA_);
         // 进行决策
         scenario_->MakeDecision();
         // 规划路径
@@ -334,7 +334,7 @@ bool PlanningProcess::get_local_path()
     case ScenarioState::STRAIGHT:
     {
         // 创建 LaneFollow 类的智能指针
-        scenario_ = std::make_unique<LaneFollowScenario>(car_, globalPath, obs_lidar_);
+        scenario_ = std::make_unique<LaneFollowScenario>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit , gpsA_);
         // 进行决策
         scenario_->MakeDecision();
         bool isLaneFollowSuccessful = scenario_->Process();
@@ -351,7 +351,7 @@ bool PlanningProcess::get_local_path()
     case ScenarioState::TURN:
     {
         // 创建 ApproachingIntersection 类的智能指针
-        scenario_ = std::make_unique<ApproachingIntersection>(car_, globalPath, obs_lidar_);
+        scenario_ = std::make_unique<ApproachingIntersection>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit , gpsA_);
         // 进行决策
         scenario_->MakeDecision();
         bool isTurnSuccessful = scenario_->Process();
@@ -368,7 +368,7 @@ bool PlanningProcess::get_local_path()
     case ScenarioState::NEAR_STOP:
     {
         // 创建 NearStop 类的智能指针
-        scenario_ = std::make_unique<NearStop>(car_, globalPath, obs_lidar_);
+        scenario_ = std::make_unique<NearStop>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit , gpsA_);
         // 进行决策
         scenario_->MakeDecision();
         bool isNearStopSuccessful = scenario_->Process();

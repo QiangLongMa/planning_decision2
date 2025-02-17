@@ -37,9 +37,9 @@ public:
     bool ChangeFirstRun(); // 改变first_run状态
 
     // 使用内联函数返回车辆在frenet下的坐标和index
-    inline tool::frentPoint GetFrentPoint() const { return FrentPoint_; }
+    inline  tool::frentPoint GetFrentPoint() const { return FrentPoint_; }
     // 使用内联函数返回车辆在全局坐标系下index
-    inline int GetIndex() const { return index; }
+    inline  int GetIndex() const { return index; }
 
 
 
