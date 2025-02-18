@@ -9,8 +9,7 @@ FirstRun::FirstRun(const Eigen::VectorXd &car, const Eigen::MatrixXd &globalPath
 {
 }
 
-void FirstRun::Straight()
-{
+void FirstRun::Straight() {
     heading_time_ = Time();
     // 1 为找到局部路径 0为未找到
     tool::frentPoint FrentPoint_;
