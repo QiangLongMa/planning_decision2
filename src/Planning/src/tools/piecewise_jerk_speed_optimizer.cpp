@@ -227,6 +227,7 @@ bool PiecewiseJerkSpeedOptimizer::Process(double init_v,double init_a,Eigen::Mat
     // }
     return true;
 }
+
 void PiecewiseJerkSpeedOptimizer::loadyaml(YAML::Node &config){
     //YAML::Node config = YAML::LoadFile(yamllocate);
   if(config["piecewise_speed"]){
