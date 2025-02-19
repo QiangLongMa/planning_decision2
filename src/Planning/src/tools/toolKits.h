@@ -7,16 +7,14 @@
 #include <iostream>
 #include <Eigen/Dense>
 #include "omp.h"
+#include "messages.hpp"
 namespace tool{
     struct PointF {
 		float X;
 		float Y;
 	};
     const double pi = 3.14159265358;
-    struct frentPoint {
-        double s = -1;
-        double d = 9999999;
-    };
+   
 
     struct states {
         double x0;

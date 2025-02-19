@@ -123,6 +123,6 @@ public:
   void getspeeduseST(Eigen::MatrixXd &path, std::vector<Eigen::Vector4d> &frenetpath);
   void getsamplepoints();
 
-  void cartesianToFrenet(const Eigen::VectorXd &car, const Eigen::MatrixXd &path, tool::frentPoint &carFrentPoint, int &minIndex);
+  void cartesianToFrenet(const Eigen::VectorXd &car, const Eigen::MatrixXd &path, frentPoint &carFrentPoint, int &minIndex);
   void findClosestPoint(const Eigen::VectorXd &car, const Eigen::MatrixXd &path, int &minIndex);
 };

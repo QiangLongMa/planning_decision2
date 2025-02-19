@@ -146,6 +146,8 @@ private:
     // 本周期局部路径
     Eigen::MatrixXd optTrajxy;
 
+    int indexinglobalpath = 0;//车辆在全局路径下的坐标 
+
 
 
 

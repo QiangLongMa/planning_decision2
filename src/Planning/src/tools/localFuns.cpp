@@ -110,7 +110,7 @@ namespace local{
     int genFrenetLocalTrajs(const Eigen::VectorXd& carRealPosition, const Eigen::MatrixXd& globalPath, const Eigen::MatrixXd& obs, tool::controlParams& cps, 
         std::vector<Eigen::MatrixXd>& localTrajs, int& minIndex, std::vector<Eigen::MatrixXd> &all_local_points, std::vector<Eigen::VectorXd> &obsess,
         Eigen::MatrixXd obs_lidar){
-        tool::frentPoint carFrentPoint; //车辆Frenet坐标位置
+        frentPoint carFrentPoint; //车辆Frenet坐标位置
         //int minIndex; //车辆与全局路径的最近点下标作为参数传递到函数外
         int carIndex;
         cartesian2Frenet(carRealPosition, globalPath, carFrentPoint, minIndex,carIndex,0);//车辆坐标变换cartesian2frenet  s d 
@@ -119,7 +119,7 @@ namespace local{
     
         std::vector<Eigen::VectorXd> obses;//障碍物 的xy 
         std::vector<Eigen::VectorXd> obses_sd;//障碍物的 sd 
-        std::vector<tool::frentPoint> obs1FrentPoint; 
+        std::vector<frentPoint > obs1FrentPoint; 
         int obsIndex; //障碍物Frenet位置, 
         std::cout<<"检测到障碍物的个数"<<obs.cols()<<std::endl;
         for (int i = 0; i < obs.cols(); i++) {
@@ -388,7 +388,7 @@ namespace local{
         }
     }
     //车辆在sd坐标系下的位置   /***************************************************************/
-    int cartesian2Frenet(const Eigen::VectorXd& realPosition, const Eigen::MatrixXd& globalPath, tool::frentPoint& carFrentPoint, int& minIndex,int &carIndex, const int flag){
+    int cartesian2Frenet(const Eigen::VectorXd& realPosition, const Eigen::MatrixXd& globalPath, frentPoint & carFrentPoint, int& minIndex,int &carIndex, const int flag){
         if (flag == 0) {
             carfindClosestPoint(realPosition, globalPath, minIndex);
             carIndex = minIndex;
@@ -403,7 +403,7 @@ namespace local{
         return 0;
     }
    
-    void lidar_obs_Frenet(const Eigen::VectorXd& realPosition, const Eigen::MatrixXd& globalPath, std::vector<tool::frentPoint>& obsFrentPoint, 
+    void lidar_obs_Frenet(const Eigen::VectorXd& realPosition, const Eigen::MatrixXd& globalPath, std::vector<frentPoint>& obsFrentPoint, 
                         int& minIndex,int &carIndex)
     {
         /*
@@ -421,7 +421,7 @@ namespace local{
         for (size_t i = 0; i < obs.rows(); i++)
         {
             obsfindClosestPoint(obs.row(i)[0], obs.row(i)[1],globalPath, minIndex,carIndex);
-            tool::frentPoint obsfrent;
+            frentPoint obsfrent;
             const double dx = obs.row(i)[0] - globalPath(0, minIndex);
             const double dy = obs.row(i)[1] - globalPath(1, minIndex);
             const double cos_theta_r = std::cos(globalPath(3, minIndex));

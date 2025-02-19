@@ -19,9 +19,9 @@ namespace local
     void findClosestPoint(const Eigen::VectorXd &realPosition, const Eigen::MatrixXd &globalPath, int &minIndex);
     void carfindClosestPoint(const Eigen::VectorXd &realPosition, const Eigen::MatrixXd &globalPath, int &minIndex);
     void obsfindClosestPoint(double x, double y, Eigen::MatrixXd globalPath, int &minIndex, const int &carIndex);
-    int cartesian2Frenet(const Eigen::VectorXd &realPosition, const Eigen::MatrixXd &globalPath, tool::frentPoint &carFrentPoint, int &index, int &carIndex, const int flag);
+    int cartesian2Frenet(const Eigen::VectorXd &realPosition, const Eigen::MatrixXd &globalPath, frentPoint &carFrentPoint, int &index, int &carIndex, const int flag);
     int frenet2Cartesian(const Eigen::MatrixXd &globalPath, const double &s, const double &d, const int &minIndex, Eigen::Vector2d &cartesianXY);
     Eigen::Vector4d cubicCoffec(double tT, double pStart, double vStart, double pEnd, double vEnd);
     int referencePath(const Eigen::MatrixXd &xy, const double v, Eigen::MatrixXd &reTrajt);
-    void lidar_obs_Frenet(const Eigen::VectorXd &realPosition, const Eigen::MatrixXd &globalPath, std::vector<tool::frentPoint> &obsFrentPoint, int &minIndex, int &carIndex);
+    void lidar_obs_Frenet(const Eigen::VectorXd &realPosition, const Eigen::MatrixXd &globalPath, std::vector<frentPoint> &obsFrentPoint, int &minIndex, int &carIndex);
 }
