@@ -7,11 +7,12 @@ Scenario::Scenario(const Eigen::VectorXd &car,
                    const Eigen::MatrixXd &globalPath,
                    const std::vector<obses_sd> &obses_limit_SD,
                    const std::vector<Eigen::VectorXd> &GlobalcoordinatesystemObsesLimit,
-                   const double &gpsA) : car_(car),
+                   const double &gpsA, const double indexinglobalpath) : car_(car),
                    globalPath(globalPath),
                    obses_limit_SD(obses_limit_SD),
                    GlobalcoordinatesystemObsesLimit(GlobalcoordinatesystemObsesLimit),
-                   gpsA_(gpsA)
+                   gpsA_(gpsA),
+                   indexinglobalpath_(indexinglobalpath)
 {
 }
 
@@ -31,11 +32,22 @@ double Scenario::Time()
 // bool DriveStraightLineFlag = false; // 直线行使标志
 // bool Overtakinginlaneflag = false;  // 车道内超车的标志
 // bool righttoleftlane = false;       // 超车完成 返回原车道的标志
-void Scenario::RestFlags()
+void Scenario::RestFlags(bool DriveStraightLineFlag_,
+                    bool ObstacleAvoidanceFlag_,
+                    bool DecelerateFlag_,
+                    bool Overtakinginlaneflag_,
+                    bool righttoleftlane)
 {
-    Decisionflags_.DriveStraightLineFlag = false; // 直行决策
-    Decisionflags_.ObstacleAvoidanceFlag = false; // 避障决策
-    Decisionflags_.DecelerateFlag = false;        // 减速跟车决策
-    Decisionflags_.Overtakinginlaneflag = false;  // 超车决策
-    Decisionflags_.righttoleftlane = false;       // 返回原车道决策
+    Decisionflags_.DriveStraightLineFlag = DriveStraightLineFlag_; // 直行决策
+    Decisionflags_.ObstacleAvoidanceFlag = ObstacleAvoidanceFlag_; // 避障决策
+    Decisionflags_.DecelerateFlag = DecelerateFlag_;        // 减速跟车决策
+    Decisionflags_.Overtakinginlaneflag = Overtakinginlaneflag_;  // 超车决策
+    Decisionflags_.righttoleftlane = righttoleftlane;       // 返回原车道决策
 }
+
+void Scenario::UpdateLocalPath() {
+    optTrajxy.resize(lastOptTrajxy.rows(), lastOptTrajxy.cols());
+    optTrajxy = lastOptTrajxy;
+    optTrajsd = lastOptTrajsd;
+}
+

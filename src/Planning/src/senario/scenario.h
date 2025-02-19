@@ -12,7 +12,7 @@ public:
     Scenario(const Eigen::VectorXd &car, const Eigen::MatrixXd &globalPath,
              const std::vector<obses_sd> &obses_limit_SD,
              const std::vector<Eigen::VectorXd> &GlobalcoordinatesystemObsesLimit,
-             const double &gpsA);
+             const double &gpsA,const double indexinglobalpath);
     virtual ~Scenario() = default;
 
 
@@ -27,18 +27,24 @@ public:
     double Time();
 
     // 重置决策flags
-    void RestFlags();
+    void RestFlags( bool DriveStraightLineFlag_,
+                    bool ObstacleAvoidanceFlag_,
+                    bool DecelerateFlag_,
+                    bool Overtakinginlaneflag_,
+                    bool righttoleftlane);
 
     // 获取本周期的局部路径optTrajxy
-    inline Eigen::MatrixXd getlocalpath() const { return optTrajxy; }
+    inline Eigen::MatrixXd getlocalpath() const { return optTrajxy;}
+
+    void UpdateLocalPath();
 
 protected:
     Decisionflags Decisionflags_;
-    local_dp_qp LOCAL_;
-    Eigen::MatrixXd optTrajxy;                  // 本周期局部路径
-    std::vector<Eigen::Vector4d> optTrajsd;     // 上周期局部路径
-    Eigen::MatrixXd lastOptTrajxy;              // 本周期局部路径
-    std::vector<Eigen::Vector4d> lastOptTrajsd; // 本周期局部路径
+    local_dp_qp LOCAL_; 
+    Eigen::MatrixXd optTrajxy;                  // 本周期局部路径xy 
+    std::vector<Eigen::Vector4d> optTrajsd;     // 上周期局部路径sd 
+    Eigen::MatrixXd lastOptTrajxy;              // 本周期局部路径xy
+    std::vector<Eigen::Vector4d> lastOptTrajsd; // 本周期局部路径sd 
 
     // 存储当前车辆状态
     Eigen::VectorXd car_;
@@ -52,8 +58,8 @@ protected:
     double gpsA_;
     
 
-    // 车辆在局部路径下的坐标点
-    int index = 0;
+    // 车辆在全局路径下的坐标点
+    int indexinglobalpath_ = 0;
 
     // 是否找到合适的局部路径
     bool find_local_path_ = false;
