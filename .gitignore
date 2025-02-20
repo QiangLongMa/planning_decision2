@@ -21,7 +21,7 @@ Makefile
 *.tmp
 
 # 编辑器、IDE 相关目录
-.vscode/
+.vscode/*
 # 但保留（取消忽略） launch.json
 !.vscode/launch.json
 .idea/
