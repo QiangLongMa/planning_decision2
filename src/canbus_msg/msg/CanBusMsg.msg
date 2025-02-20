@@ -1,0 +1,13 @@
+float64 control_steer
+float64 control_steer_rate
+int8 control_throttle
+int8 control_brake
+int8 control_gear
+int8 left_light
+int8 right_light
+bool mode_enable
+bool steer_enable
+bool gear_enable
+bool throttle_enable
+bool brake_enable
+bool light_enable
