@@ -26,7 +26,7 @@ PlanningProcess::PlanningProcess()
     speed_gears_subscribe_ = this->create_subscription<std_msgs::msg::Int64MultiArray>("speed_gears", 10, std::bind(&PlanningProcess::speed_gears_callback, this, std::placeholders::_1));
 
     // 发布局部路径到hmi
-    local_to_hmi_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("local_publisher ", 10);
+    local_to_hmi_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("local_publisher", 10);
 
     // 发布路径到控制节点
     local_to_control_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("local_to_control", 10);
@@ -206,6 +206,7 @@ void PlanningProcess::lidar_callback(const std_msgs::msg::Float64MultiArray::Sha
         obs_lidar_.setOnes(5, 1);
         obs_lidar_ *= 1000;
     }
+    else
     {
         int cols = msg->data.size() / 5; // 有多少个障碍物信息
         obs_lidar_.resize(5, cols);

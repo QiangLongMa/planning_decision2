@@ -134,6 +134,8 @@ void LaneFollowScenario::ReturnRightLane()
 
 void LaneFollowScenario::MakeDecision()
 {
+    // 判断迭代容器vector obses_limit_SD 是否为空
+  
 }
 
 

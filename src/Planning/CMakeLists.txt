@@ -11,6 +11,15 @@ if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
 endif()
 
+# 调试信息
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
+endif()
+# 禁用优化
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  set(COMPILE_OPTIONS -Wall -Wextra -Wpedantic -O0)
+endif()
+
 # 设置编译选项
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set(COMPILE_OPTIONS -Wall -Wextra -Wpedantic)
@@ -66,12 +75,27 @@ target_link_libraries(${TARGET} yaml-cpp)
 # 设置编译选项
 target_compile_options(${TARGET} PRIVATE ${COMPILE_OPTIONS})
 
+set_target_properties(planning_main_node PROPERTIES
+    BUILD_WITH_INSTALL_RPATH TRUE
+    INSTALL_RPATH "$ORIGIN/../senario:$ORIGIN/../tools"
+)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # 链接库
 ament_target_dependencies(${TARGET} ${DEPENDS})
 
 # 安装可执行文件
 install(TARGETS ${TARGET}
   DESTINATION lib/${PROJECT_NAME})
+
+install(DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME})
+
+install(FILES
+  src/YAML/param.yaml
+  DESTINATION share/${PROJECT_NAME}/YAML
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

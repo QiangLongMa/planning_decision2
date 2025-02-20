@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(tools)
 
+find_package(ament_index_cpp REQUIRED)
 
 # 收集 tools 下的所有源文件
 file(GLOB TOOLS_SRCS "*.cpp")
@@ -32,6 +33,8 @@ ament_target_dependencies(${TARGET}
 )
 # 如果 OSQP 未被 ament_target_dependencies 完全链接，可以显示链接导入目标：
 target_link_libraries(${TARGET} osqp::osqp)
+target_link_libraries(${TARGET} ament_index_cpp::ament_index_cpp)
+
 
 # 设置编译选项
 target_compile_options(${TARGET} PRIVATE ${COMPILE_OPTIONS})
