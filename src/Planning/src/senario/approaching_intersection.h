@@ -8,7 +8,7 @@ public:
     ApproachingIntersection(const Eigen::VectorXd &car, const Eigen::MatrixXd &globalPath,
                             const std::vector<obses_sd> &obses_limit_SD,
                             const std::vector<Eigen::VectorXd> &GlobalcoordinatesystemObsesLimit,
-                            const double &gpsA);
+                            const double &gpsA, const double indexinglobalpath);
     void Straight();
     void AvoidObstacle();
     void Overtake();

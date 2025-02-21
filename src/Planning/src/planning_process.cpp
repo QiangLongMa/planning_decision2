@@ -26,7 +26,7 @@ PlanningProcess::PlanningProcess()
     speed_gears_subscribe_ = this->create_subscription<std_msgs::msg::Int64MultiArray>("speed_gears", 10, std::bind(&PlanningProcess::speed_gears_callback, this, std::placeholders::_1));
 
     // 发布局部路径到hmi
-    local_to_hmi_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("local_publisher ", 10);
+    local_to_hmi_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("local_publisher", 10);
 
     // 发布路径到控制节点
     local_to_control_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("local_to_control", 10);
@@ -146,6 +146,9 @@ void PlanningProcess::SendGlobalObses(std::vector<Eigen::VectorXd> &obses)
 // gps的回调函数，生成主车的gps坐标
 void PlanningProcess::gps_callback(const std_msgs::msg::Float64MultiArray::SharedPtr msg)
 {
+    // 打印一下msg->data的维度
+    std::cout << "gps data size: " << msg->data.size() << std::endl;
+
     // 判断msg->data 是否是空的
     if (msg->data.empty())
     {
@@ -153,6 +156,7 @@ void PlanningProcess::gps_callback(const std_msgs::msg::Float64MultiArray::Share
         car_.resize(1, 1);
     }
     // 生成主车的gps坐标
+    else
     {
         gpsx_ = msg->data[0];
         gpsy_ = msg->data[1];
@@ -206,6 +210,7 @@ void PlanningProcess::lidar_callback(const std_msgs::msg::Float64MultiArray::Sha
         obs_lidar_.setOnes(5, 1);
         obs_lidar_ *= 1000;
     }
+    else
     {
         int cols = msg->data.size() / 5; // 有多少个障碍物信息
         obs_lidar_.resize(5, cols);
@@ -254,7 +259,7 @@ void PlanningProcess::lidar_callback(const std_msgs::msg::Float64MultiArray::Sha
             // 对第4行（其他数据）直接赋值
             T_obs_lidar.row(4) = obs_lidar_.row(4);
 
-            obs::frentPoint FrentPoint_;
+            frentPoint FrentPoint_;
             obs::cartesianToFrenet(car_, globalPath, FrentPoint_, obs_car_globalpath_index); // 车辆在全局坐标系下的sd 编号
             obs::CalculateobsesSD(FrentPoint_, globalPath, T_obs_lidar, obses_limit_SD, LidarcoordinatesystemObsesLimit, obs_lidar_,
                                   GlobalcoordinatesystemObsesLimit, obs_car_globalpath_index);
@@ -301,7 +306,12 @@ bool PlanningProcess::get_local_path()
         scenario_manager_->UpdateData(car_, globalPath, obs_lidar_);
     }
     state_ = scenario_manager_->Update();
+    RCLCPP_INFO(this->get_logger(), "Current scenario state: %d", static_cast<int>(state_));
+    // 输出car_变量
+    std::cout << "car_:"<< car_ << std::endl;
 
+
+    indexinglobalpath = scenario_manager_->GetIndex();
     // 根据senum class ScenarioState
     // {
     //     INIT,     // 第一次执行，初始化状态
@@ -315,7 +325,7 @@ bool PlanningProcess::get_local_path()
     case ScenarioState::INIT:
     {
         // 创建 FirstRun 类的智能指针
-        scenario_ = std::make_unique<FirstRun>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit , gpsA_);
+        scenario_ = std::make_unique<FirstRun>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit , gpsA_, indexinglobalpath);
         // 进行决策
         scenario_->MakeDecision();
         // 规划路径
@@ -334,7 +344,7 @@ bool PlanningProcess::get_local_path()
     case ScenarioState::STRAIGHT:
     {
         // 创建 LaneFollow 类的智能指针
-        scenario_ = std::make_unique<LaneFollowScenario>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit , gpsA_);
+        scenario_ = std::make_unique<LaneFollowScenario>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit , gpsA_, indexinglobalpath);
         // 进行决策
         scenario_->MakeDecision();
         bool isLaneFollowSuccessful = scenario_->Process();
@@ -351,12 +361,11 @@ bool PlanningProcess::get_local_path()
     case ScenarioState::TURN:
     {
         // 创建 ApproachingIntersection 类的智能指针
-        scenario_ = std::make_unique<ApproachingIntersection>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit , gpsA_);
+        scenario_ = std::make_unique<ApproachingIntersection>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit , gpsA_, indexinglobalpath);
         // 进行决策
         scenario_->MakeDecision();
         bool isTurnSuccessful = scenario_->Process();
-        if (isTurnSuccessful)
-        {
+        if (isTurnSuccessful) {
             // 获取路径
             optTrajxy = scenario_->getlocalpath();
             // 发送给控制端
@@ -368,7 +377,7 @@ bool PlanningProcess::get_local_path()
     case ScenarioState::NEAR_STOP:
     {
         // 创建 NearStop 类的智能指针
-        scenario_ = std::make_unique<NearStop>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit , gpsA_);
+        scenario_ = std::make_unique<NearStop>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit , gpsA_, indexinglobalpath);
         // 进行决策
         scenario_->MakeDecision();
         bool isNearStopSuccessful = scenario_->Process();

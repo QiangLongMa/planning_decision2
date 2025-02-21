@@ -1020,7 +1020,7 @@ void local_dp_qp::findClosestPoint(const Eigen::VectorXd& car, const Eigen::Matr
   }
 	
 }
-void local_dp_qp::cartesianToFrenet(const Eigen::VectorXd& car, const Eigen::MatrixXd& path, tool::frentPoint& carFrentPoint, int& minIndex) {
+void local_dp_qp::cartesianToFrenet(const Eigen::VectorXd& car, const Eigen::MatrixXd& path, frentPoint & carFrentPoint, int& minIndex) {
 		
   findClosestPoint(car, path, minIndex);
   const double dx = car(0) - path(0,minIndex);

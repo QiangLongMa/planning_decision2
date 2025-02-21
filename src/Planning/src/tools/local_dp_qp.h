@@ -15,6 +15,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "ament_index_cpp/get_package_share_directory.hpp"
+
 struct Node
 {
   Node(const SlPoint &_sl_point)
@@ -87,7 +89,9 @@ private:
   double path_l_cost;
   double path_dl_cost;
   double path_ddl_cost;
-  std::string yamllocate = "src/local/src/param.yaml";
+  // …在 loadyaml() 或其他适当的位置中：
+  std::string pkg_share = ament_index_cpp::get_package_share_directory("planning");
+  std::string yamllocate = pkg_share + "/YAML/param.yaml";
   std::vector<int> optinglobalindex; // 局部路径在全局路径中的编号
   YAML::Node config;
 
@@ -123,6 +127,6 @@ public:
   void getspeeduseST(Eigen::MatrixXd &path, std::vector<Eigen::Vector4d> &frenetpath);
   void getsamplepoints();
 
-  void cartesianToFrenet(const Eigen::VectorXd &car, const Eigen::MatrixXd &path, tool::frentPoint &carFrentPoint, int &minIndex);
+  void cartesianToFrenet(const Eigen::VectorXd &car, const Eigen::MatrixXd &path, frentPoint &carFrentPoint, int &minIndex);
   void findClosestPoint(const Eigen::VectorXd &car, const Eigen::MatrixXd &path, int &minIndex);
 };

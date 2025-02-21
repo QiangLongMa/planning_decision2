@@ -2,6 +2,8 @@
 #include <iostream>
 #include <vector>
 #include <Eigen/Dense>
+#include <array>
+#include <math.h>
 #include "toolKits.h"
 #include "scenario_tools.h"
 
@@ -37,7 +39,7 @@ public:
     bool ChangeFirstRun(); // 改变first_run状态
 
     // 使用内联函数返回车辆在frenet下的坐标和index
-    inline  tool::frentPoint GetFrentPoint() const { return FrentPoint_; }
+    inline  frentPoint GetFrentPoint() const { return FrentPoint_; }
     // 使用内联函数返回车辆在全局坐标系下index
     inline  int GetIndex() const { return index; }
 
@@ -65,6 +67,6 @@ private:
     int index = 0;
 
     // 车辆在frenet下的坐标
-    tool::frentPoint FrentPoint_;
+    frentPoint FrentPoint_;
 
 };

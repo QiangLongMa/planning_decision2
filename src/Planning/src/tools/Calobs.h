@@ -5,14 +5,11 @@
 #include <vector>
 // #include"local_dp_qp.h"
 #include "QP.h"
+#include "messages.hpp"
 
-namespace obs
-{
-    struct frentPoint
-    {
-        double s = -1;
-        double d = 9999999;
-    };
+
+namespace obs{
+
     void obsfindClosestPoint(double x, double y, Eigen::MatrixXd &globalPath, int &minIndex, const int carIndex);
     void findClosestPoint(const Eigen::VectorXd &car, const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> &path, int &minIndex);
     int cartesianToFrenet(const Eigen::VectorXd &car, const Eigen::Matrix<double, 7, Eigen::Dynamic> &path, frentPoint &carFrentPoint, int &index);
