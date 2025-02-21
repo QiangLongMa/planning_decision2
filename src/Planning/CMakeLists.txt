@@ -77,7 +77,7 @@ target_compile_options(${TARGET} PRIVATE ${COMPILE_OPTIONS})
 
 set_target_properties(planning_main_node PROPERTIES
     BUILD_WITH_INSTALL_RPATH TRUE
-    INSTALL_RPATH "$ORIGIN/../senario:$ORIGIN/../tools"
+    INSTALL_RPATH "$ORIGIN/../senario:$ORIGIN/../tools:$ORIGIN/../../..//ros2_path_interfaces/lib"
 )
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

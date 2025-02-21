@@ -1,0 +1,17 @@
+/home/nvidia/weiLiu/auto_v10.1.1/src/control/install/control/lib/control/control_node
+/home/nvidia/weiLiu/auto_v10.1.1/src/control/install/control/share/control/launch/control.launch.py
+/home/nvidia/weiLiu/auto_v10.1.1/src/control/install/control/share/ament_index/resource_index/package_run_dependencies/control
+/home/nvidia/weiLiu/auto_v10.1.1/src/control/install/control/share/ament_index/resource_index/parent_prefix_path/control
+/home/nvidia/weiLiu/auto_v10.1.1/src/control/install/control/share/control/environment/ament_prefix_path.sh
+/home/nvidia/weiLiu/auto_v10.1.1/src/control/install/control/share/control/environment/ament_prefix_path.dsv
+/home/nvidia/weiLiu/auto_v10.1.1/src/control/install/control/share/control/environment/path.sh
+/home/nvidia/weiLiu/auto_v10.1.1/src/control/install/control/share/control/environment/path.dsv
+/home/nvidia/weiLiu/auto_v10.1.1/src/control/install/control/share/control/local_setup.bash
+/home/nvidia/weiLiu/auto_v10.1.1/src/control/install/control/share/control/local_setup.sh
+/home/nvidia/weiLiu/auto_v10.1.1/src/control/install/control/share/control/local_setup.zsh
+/home/nvidia/weiLiu/auto_v10.1.1/src/control/install/control/share/control/local_setup.dsv
+/home/nvidia/weiLiu/auto_v10.1.1/src/control/install/control/share/control/package.dsv
+/home/nvidia/weiLiu/auto_v10.1.1/src/control/install/control/share/ament_index/resource_index/packages/control
+/home/nvidia/weiLiu/auto_v10.1.1/src/control/install/control/share/control/cmake/controlConfig.cmake
+/home/nvidia/weiLiu/auto_v10.1.1/src/control/install/control/share/control/cmake/controlConfig-version.cmake
+/home/nvidia/weiLiu/auto_v10.1.1/src/control/install/control/share/control/package.xml

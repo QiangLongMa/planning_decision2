@@ -1,0 +1,9 @@
+std_msgs/Header header
+
+float64 x_linear_acceleration
+float64 y_linear_acceleration
+float64 z_linear_acceleration
+
+float64 x_angular_velocity
+float64 y_angular_velocity
+float64 z_angular_velocity

@@ -11,6 +11,8 @@
 /devel/
 /install/
 /log/
+/output_txt/
+/*.txt
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake

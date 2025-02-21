@@ -146,6 +146,9 @@ void PlanningProcess::SendGlobalObses(std::vector<Eigen::VectorXd> &obses)
 // gps的回调函数，生成主车的gps坐标
 void PlanningProcess::gps_callback(const std_msgs::msg::Float64MultiArray::SharedPtr msg)
 {
+    // 打印一下msg->data的维度
+    std::cout << "gps data size: " << msg->data.size() << std::endl;
+
     // 判断msg->data 是否是空的
     if (msg->data.empty())
     {
@@ -153,6 +156,7 @@ void PlanningProcess::gps_callback(const std_msgs::msg::Float64MultiArray::Share
         car_.resize(1, 1);
     }
     // 生成主车的gps坐标
+    else
     {
         gpsx_ = msg->data[0];
         gpsy_ = msg->data[1];
@@ -302,6 +306,11 @@ bool PlanningProcess::get_local_path()
         scenario_manager_->UpdateData(car_, globalPath, obs_lidar_);
     }
     state_ = scenario_manager_->Update();
+    RCLCPP_INFO(this->get_logger(), "Current scenario state: %d", static_cast<int>(state_));
+    // 输出car_变量
+    std::cout << "car_:"<< car_ << std::endl;
+
+
     indexinglobalpath = scenario_manager_->GetIndex();
     // 根据senum class ScenarioState
     // {
