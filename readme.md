@@ -1,0 +1,3 @@
+# 代码架构
+目前包括Planning功能包和ros2_path_interfaces功能包
+采用两层状态机机制实现
