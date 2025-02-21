@@ -133,7 +133,7 @@ MainWindow::~MainWindow(){
     delete trunrviz;
     //system("ps -a | grep gnss_node | awk '{print $1}' | xargs kill -9");
     system("ps -a | grep global_node | awk '{print $1}' | xargs kill -15");    
-    system("ps -a | grep local_node3 | awk '{print $1}' | xargs kill -15"); 
+    system("ps -a | grep planning_main_node | awk '{print $1}' | xargs kill -15"); 
     system("ps -a | grep image_pub | awk '{print $1}' | xargs kill -15");  
     system("ps -a | grep detect_node | awk '{print $1}' | xargs kill -15");    
     system("ps -a | grep control_node | awk '{print $1}' | xargs kill -15");
@@ -180,7 +180,7 @@ void MainWindow::callrviz(){
 void MainWindow::closeEvent (QCloseEvent *event) {
    // system("ps -a | grep gnss_node | awk '{print $1}' | xargs kill -9");
     system("ps -a | grep global_node | awk '{print $1}' | xargs kill -15");
-    system("ps -a | grep local_node3 | awk '{print $1}' | xargs kill -15");
+    system("ps -a | grep planning_main_node | awk '{print $1}' | xargs kill -15");
     system("ps -a | grep image_pub | awk '{print $1}' | xargs kill -15");  
     system("ps -a | grep detect_node | awk '{print $1}' | xargs kill -15");   
     system("ps -a | grep control_node | awk '{print $1}' | xargs kill -15");   

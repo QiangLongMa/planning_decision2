@@ -15,9 +15,6 @@ int main(int argc, char *argv[])
   }
 
     // 执行node的proces()函数
-  
-
- 
   rclcpp::spin(node);
   rclcpp::shutdown();
   return 0;

@@ -94,7 +94,7 @@ class control_node : public rclcpp::Node{
             if(run_stop_flag){
                 //没有局部路径规划 
                 if((interpolationoptTrajxy.array() != 0.0).any() == 0||interpolationoptTrajxy.cols()== 1) {
-                    std::cout<<"optTrajxy in None!!!"<<std::endl;
+                    //std::cout<<"optTrajxy in None!!!"<<std::endl;
                     newSpeedRef=0;    
                     return;
                 }

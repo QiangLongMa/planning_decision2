@@ -225,7 +225,7 @@ void PlanningProcess::lidar_callback(const std_msgs::msg::Float64MultiArray::Sha
         }
         else
         {
-            Eigen::MatrixXd T_obs_lidar(obs_lidar_.rows(), obs_lidar_.cols()); // 将雷达生成的障碍物膨胀，防止碰撞
+            T_obs_lidar.resize(obs_lidar_.rows(), obs_lidar_.cols()); // 将雷达生成的障碍物膨胀，防止碰撞
             double Expansiondistance = 0.2;                                    // 10cm *2 一共是二十厘米
             // 对第0、1行统一减去 Expansiondistance
             obs_lidar_.block(0, 0, 2, obs_lidar_.cols()).array() -= Expansiondistance;
@@ -297,6 +297,13 @@ void PlanningProcess::timer_local_callback_to_control()
 bool PlanningProcess::get_local_path()
 {
     // 如果 scenarioManager_ 不存在，则创建；否则更新数据
+    if (car_.size() == 0 || car_.size() == 1) {
+        return 0;
+    } 
+    if ((globalPath.array() != 0.0).any() == 0) {
+        std::cout << "Waiting global traj generates... " << std::endl;
+        return 0;
+    } 
     if (!scenario_manager_)
     {
         scenario_manager_ = std::make_unique<ScenarioManager>(car_, globalPath, obs_lidar_);
@@ -308,9 +315,6 @@ bool PlanningProcess::get_local_path()
     state_ = scenario_manager_->Update();
     RCLCPP_INFO(this->get_logger(), "Current scenario state: %d", static_cast<int>(state_));
     // 输出car_变量
-    std::cout << "car_:"<< car_ << std::endl;
-
-
     indexinglobalpath = scenario_manager_->GetIndex();
     // 根据senum class ScenarioState
     // {
