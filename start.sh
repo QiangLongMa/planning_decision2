@@ -47,7 +47,7 @@ log_filename="${current_path}/output_txt/$(date +"%Y-%m-%d_%H-%M-%S").txt"
 # 打印生成的日志文件名
 echo "日志文件名是: $log_filename"
 # 运行第一个命令并将日志输出到动态命名的文件
-ros2 run hmi hmi -> "$log_filename" &
+ros2 run hmi hmi -> "$log_filename" &   
 PID1=$!
 
 rviz2 -d ${current_path}/src/myrviz/default.rviz >/dev/null 2>&1  &
