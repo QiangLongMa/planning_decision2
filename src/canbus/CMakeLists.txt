@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(can)
+project(canbus)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -19,6 +19,8 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(canbus_msg REQUIRED)
+
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -33,29 +35,26 @@ endif()
 
 ament_package()
 include_directories(include)
-add_executable(can_node src/can_node.cpp src/socketcan.cpp)
+add_executable(canbus_node src/canbus_node.cpp src/canbus_socketcan.cpp)
 # 添加包含目录，以便可以引用其他文件的头文件
-target_include_directories(can_node PUBLIC
+target_include_directories(canbus_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-ament_target_dependencies(can_node rclcpp std_msgs)
+ament_target_dependencies(canbus_node rclcpp std_msgs canbus_msg)
 install(TARGETS
-can_node
+canbus_node
   DESTINATION lib/${PROJECT_NAME}
 )
 
-add_executable(test1 src/test.cpp)
+add_executable(mytest src/test.cpp )
 # 添加包含目录，以便可以引用其他文件的头文件
-target_include_directories(test1 PUBLIC
+target_include_directories(mytest PUBLIC
 $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 $<INSTALL_INTERFACE:include>)
-ament_target_dependencies(test1 rclcpp std_msgs)
+ament_target_dependencies(mytest rclcpp std_msgs canbus_msg)
 install(TARGETS
-test1
+mytest
 DESTINATION lib/${PROJECT_NAME}
 )
-
-
-
 install(DIRECTORY launch
   DESTINATION share/${PROJECT_NAME})

@@ -149,7 +149,7 @@ void PlanningProcess::SendGlobalObses(std::vector<Eigen::VectorXd> &obses)
 void PlanningProcess::gps_callback(const std_msgs::msg::Float64MultiArray::SharedPtr msg)
 {
     // 打印一下msg->data的维度
-    std::cout << "gps data size: " << msg->data.size() << std::endl;
+    //std::cout << "gps data size: " << msg->data.size() << std::endl;
 
     // 判断msg->data 是否是空的
     if (msg->data.empty())

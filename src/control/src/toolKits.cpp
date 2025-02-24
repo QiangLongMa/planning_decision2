@@ -372,7 +372,7 @@ namespace tool{
 		car(1) = gpsY - y0;
 		car(2) = speed;
 		car(3) = 90 - heading;
-		car(4) = 2.647;
+		car(4) = 3.0;
 		// std::cout << "Positioning successful!" << car(3)<<"heading" <<heading<< std::endl;
 		return 0;
 	}

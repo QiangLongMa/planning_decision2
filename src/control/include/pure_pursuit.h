@@ -24,9 +24,6 @@ class PurePursuit
     double vehicle_x, double vehicle_y, double vehicle_theta,double vehicle_v);
         double getSteeringAngle(const std::vector<std::vector<double>> &path, const std::vector<double> &vehicle_state);
         //控制指令话题
-    
-
-     
         //轴距
         double l = 2.0;
         //起始预瞄距离
@@ -34,7 +31,7 @@ class PurePursuit
         //预瞄系数
         double kv = 0.1;
         //最大转向角
-        double max_steer_angle = 35 / 180 *3.1415926;
+        double max_steer_angle = 32.9 / 180 *3.1415926;
 
         //全局路径点
         vector<double> xr;
