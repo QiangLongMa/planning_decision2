@@ -24,8 +24,6 @@
 #include "approaching_intersection.h"
 #include "near_stop.h"
 
-
-
 class PlanningProcess : public rclcpp::Node
 {
 
@@ -64,9 +62,8 @@ private:
     void SendHmiObs(std::vector<Eigen::VectorXd> &obses);
     void SendGlobalObses(std::vector<Eigen::VectorXd> &obses);
 
-     // 系统控制函数
-     void timer_local_callback_to_control();
-
+    // 系统控制函数
+    void timer_local_callback_to_control();
 
 private:
     // 智能指针对象frame_
@@ -109,9 +106,6 @@ private:
     // 系统每隔100ms执行一次局部路径生成主函数
     int Slowdowntimethreshold = 100;
 
-   
-
-
     /************************gps信号*****************************/
     double gpsx_ = 0.0;
     double gpsy_ = 0.0;
@@ -126,14 +120,12 @@ private:
     Eigen::MatrixXd obs_lidar_;
 
     /**************obs*********/
-    int obs_car_globalpath_index = 0;//计算障碍物时，车辆在全局路径的编号 
+    int obs_car_globalpath_index = 0; // 计算障碍物时，车辆在全局路径的编号
 
-    
     /**************Calobs***************/
-    std::vector<obses_sd> obses_limit_SD; //在范围内的SD
-    std::vector<Eigen::VectorXd> LidarcoordinatesystemObsesLimit;//障碍物的xy 在范围内的雷达坐标系下的障碍物                  
+    std::vector<obses_sd> obses_limit_SD;                         // 在范围内的SD
+    std::vector<Eigen::VectorXd> LidarcoordinatesystemObsesLimit; // 障碍物的xy 在范围内的雷达坐标系下的障碍物
     std::vector<Eigen::VectorXd> GlobalcoordinatesystemObsesLimit;
-
 
     Eigen::MatrixXd globalPath;
 
@@ -146,11 +138,7 @@ private:
     // 本周期局部路径
     Eigen::MatrixXd optTrajxy;
 
-    int indexinglobalpath = 0;//车辆在全局路径下的坐标 
-
-
-
-
+    int indexinglobalpath = 0; // 车辆在全局路径下的坐标
 };
 
 #endif // PLANNING_PROCESS_H_

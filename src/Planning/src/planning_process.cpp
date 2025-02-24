@@ -150,7 +150,7 @@ void PlanningProcess::gps_callback(const std_msgs::msg::Float64MultiArray::Share
     std::cout << "gps data size: " << msg->data.size() << std::endl;
 
     // 判断msg->data 是否是空的
-    if (msg->data.empty())
+    if (msg->data.empty())   
     {
         // RCLCPP_INFO(this->get_logger(), "gps data is empty");
         car_.resize(1, 1);
@@ -171,33 +171,26 @@ void PlanningProcess::gps_callback(const std_msgs::msg::Float64MultiArray::Share
 // 全局路径的回调函数，获取全局路径
 void PlanningProcess::global_callback(const std_msgs::msg::Float64MultiArray::SharedPtr msg)
 {
-    if (msg->data.size() != 0)
+
+    if (!msg->data.empty())
     {
-        if (!msg->data.empty())
+        int cols = msg->data.back();
+        msg->data.pop_back();
+        // 检查剩余数据量是否满足 7*cols
+        if (msg->data.size() != static_cast<size_t>(7 * cols))
         {
-            int cols = msg->data.back();
-            msg->data.pop_back();
-            // 检查剩余数据量是否满足 7*cols
-            if (msg->data.size() != static_cast<size_t>(7 * cols))
-            {
-                RCLCPP_ERROR(this->get_logger(), "globalPath data size mismatch: expected %d but got %zu", 7 * cols, msg->data.size());
-                return;
-            }
-            // 直接将数据映射为一个 7 x cols 的矩阵，利用具体的 7 行模板参数
-            globalPath = Eigen::Map<const Eigen::Matrix<double, 7, Eigen::Dynamic>>(msg->data.data(), 7, cols);
+            RCLCPP_ERROR(this->get_logger(), "globalPath data size mismatch: expected %d but got %zu", 7 * cols, msg->data.size());
+            return;
         }
-        else
-        {
-            RCLCPP_WARN(this->get_logger(), "globalPath data is empty");
-        }
-        // std::cout << "Local Node global path: " << std::endl;
-        // std::cout << globalPath.transpose() << std::endl;
-        // for (size_t i = 0; i < globalPath.cols(); ++i)
-        // {
-        //     outputFile << globalPath(4, i) << std::endl;
-        // }
-        // outputFile.close();
+        // 直接将数据映射为一个 7 x cols 的矩阵，利用具体的 7 行模板参数
+        globalPath = Eigen::Map<const Eigen::Matrix<double, 7, Eigen::Dynamic>>(msg->data.data(), 7, cols);
     }
+    else
+    {
+        RCLCPP_WARN(this->get_logger(), "globalPath data is empty");
+    }
+    // std::cout << "Local Node global path: " << std::endl;
+    // std::cout << globalPath.transpose() << std::endl;
 }
 
 // 雷达的回调函数，对雷达返回的数据做初步处理
@@ -296,6 +289,18 @@ void PlanningProcess::timer_local_callback_to_control()
  */
 bool PlanningProcess::get_local_path()
 {
+    // 判断全局路径和是否为空
+    if (globalPath.size() == 0)
+    {
+        RCLCPP_WARN(this->get_logger(), "globalPath is empty");
+        return false;
+    }
+    // 判断主车的gps坐标是否为空
+    if (car_.size() == 1)
+    {
+        RCLCPP_WARN(this->get_logger(), "car_ is empty");
+        return false;
+    }
     // 如果 scenarioManager_ 不存在，则创建；否则更新数据
     if (!scenario_manager_)
     {
@@ -307,9 +312,6 @@ bool PlanningProcess::get_local_path()
     }
     state_ = scenario_manager_->Update();
     RCLCPP_INFO(this->get_logger(), "Current scenario state: %d", static_cast<int>(state_));
-    // 输出car_变量
-    std::cout << "car_:"<< car_ << std::endl;
-
 
     indexinglobalpath = scenario_manager_->GetIndex();
     // 根据senum class ScenarioState
@@ -325,7 +327,7 @@ bool PlanningProcess::get_local_path()
     case ScenarioState::INIT:
     {
         // 创建 FirstRun 类的智能指针
-        scenario_ = std::make_unique<FirstRun>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit , gpsA_, indexinglobalpath);
+        scenario_ = std::make_unique<FirstRun>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit, gpsA_, indexinglobalpath);
         // 进行决策
         scenario_->MakeDecision();
         // 规划路径
@@ -344,7 +346,7 @@ bool PlanningProcess::get_local_path()
     case ScenarioState::STRAIGHT:
     {
         // 创建 LaneFollow 类的智能指针
-        scenario_ = std::make_unique<LaneFollowScenario>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit , gpsA_, indexinglobalpath);
+        scenario_ = std::make_unique<LaneFollowScenario>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit, gpsA_, indexinglobalpath);
         // 进行决策
         scenario_->MakeDecision();
         bool isLaneFollowSuccessful = scenario_->Process();
@@ -361,11 +363,12 @@ bool PlanningProcess::get_local_path()
     case ScenarioState::TURN:
     {
         // 创建 ApproachingIntersection 类的智能指针
-        scenario_ = std::make_unique<ApproachingIntersection>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit , gpsA_, indexinglobalpath);
+        scenario_ = std::make_unique<ApproachingIntersection>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit, gpsA_, indexinglobalpath);
         // 进行决策
         scenario_->MakeDecision();
         bool isTurnSuccessful = scenario_->Process();
-        if (isTurnSuccessful) {
+        if (isTurnSuccessful)
+        {
             // 获取路径
             optTrajxy = scenario_->getlocalpath();
             // 发送给控制端
@@ -377,7 +380,7 @@ bool PlanningProcess::get_local_path()
     case ScenarioState::NEAR_STOP:
     {
         // 创建 NearStop 类的智能指针
-        scenario_ = std::make_unique<NearStop>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit , gpsA_, indexinglobalpath);
+        scenario_ = std::make_unique<NearStop>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit, gpsA_, indexinglobalpath);
         // 进行决策
         scenario_->MakeDecision();
         bool isNearStopSuccessful = scenario_->Process();

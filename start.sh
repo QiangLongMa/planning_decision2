@@ -53,7 +53,7 @@ PID1=$!
 rviz2 -d ~/planning_decision2/src/myrviz/default.rviz >/dev/null 2>&1  &
 PID2=$!
 
-ros2 bag play /home/ring/bag/rosbag2_2024_10_22-04_10_46/rosbag2_2024_10_22-04_10_46_0.db3 --loop
+ros2 bag play /home/ring/bag/rosbag2_2024_10_22-04_10_46/rosbag2_2024_10_22-04_10_46_0.db3 
 
 
 # Optionally, you can wait for both commands to finish
