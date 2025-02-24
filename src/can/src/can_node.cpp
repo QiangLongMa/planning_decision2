@@ -40,11 +40,11 @@ public:
             if (biaozhi < 0) return; 
             std_msgs::msg::Int32 msg;
             msg.data = biaozhi;
-            RCLCPP_INFO(this->get_logger(), "Published brake flag: %d", biaozhi);
-            std::cout<<"biaozhi"<<std::endl;
+           // RCLCPP_INFO(this->get_logger(), "Published brake flag: %d", biaozhi);
+            //std::cout<<"biaozhi"<<std::endl;
             sub_brake_flag->publish(msg);
         } else {
-            std::cout<<"socketcan_ is null, cannot send brake flag"<<std::endl;
+            //std::cout<<"socketcan_ is null, cannot send brake flag"<<std::endl;
             RCLCPP_WARN(this->get_logger(), "socketcan_ is null, cannot send brake flag");
         }
     }
@@ -63,7 +63,7 @@ public:
         }
         else {
             if (socketcan_!=nullptr) {
-                std::cout << "socketcan_ is initialized: " << (socketcan_  != nullptr ? "Yes" : "No") << std::endl;
+                //std::cout << "socketcan_ is initialized: " << (socketcan_  != nullptr ? "Yes" : "No") << std::endl;
                 flag = true;
                 int speed = static_cast<int>(msg->data[0]);
                 int sw_angle = static_cast<int>((msg->data[2]));

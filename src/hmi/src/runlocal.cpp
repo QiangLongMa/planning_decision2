@@ -4,5 +4,5 @@ runlocal::runlocal() {}
 
 void runlocal::run() {
     // std::cout << "ros2 run local  local_node" << std::endl;
-    system(" ros2 run local local_node4 ");
+    system(" ros2 run planning planning_main_node");
 }

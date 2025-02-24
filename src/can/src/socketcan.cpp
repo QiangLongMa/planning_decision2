@@ -60,7 +60,7 @@ socketcan::socketcan()
 socketcan::~socketcan(){
 
     running = false;
-    std::cout << "running: " << running << " startsocketcanflag: " << startsocketcanflag << std::endl;
+    //std::cout << "running: " << running << " startsocketcanflag: " << startsocketcanflag << std::endl;
     sleep(0.1);
     unsigned char data[8] = {0,0,0,0,0,0,0,0};//0x20
 	data[0]= 0;

@@ -47,10 +47,10 @@ log_filename="${current_path}/output_txt/$(date +"%Y-%m-%d_%H-%M-%S").txt"
 # 打印生成的日志文件名
 echo "日志文件名是: $log_filename"
 # 运行第一个命令并将日志输出到动态命名的文件
-ros2 run hmi hmi -> "$log_filename" &
+ros2 run hmi hmi -> "$log_filename" &   
 PID1=$!
 
-rviz2 -d ~/planning_decision2/src/myrviz/default.rviz >/dev/null 2>&1  &
+rviz2 -d ${current_path}/src/myrviz/default.rviz >/dev/null 2>&1  &
 PID2=$!
 
 ros2 bag play /home/ring/bag/rosbag2_2024_10_22-04_10_46/rosbag2_2024_10_22-04_10_46_0.db3 
@@ -111,9 +111,9 @@ kill_ros2_processes() {
         echo "real_time_plot process not found."
     fi
 
-    pidlocal=$(pgrep -f local_node4)
+    pidlocal=$(pgrep -f planning_main_node)
     if [ -n "$pidlocal" ]; then
-        echo "Killing local_node4 process with PID $pidlocal"
+        echo "Killing planning_main_node process with PID $pidlocal"
         kill -15 $pidlocal
     else
         echo "local_node4 process not found."
