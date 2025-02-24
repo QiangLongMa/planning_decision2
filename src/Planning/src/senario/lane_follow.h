@@ -24,7 +24,10 @@ private:
     double start_l;
     double end_l;
     double target_l;
+<<<<<<< HEAD
     double heading_time_;
+=======
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
     double ddl;
     double dl;
     double distance_threshold = 9; //停车距离阈值 自车长度 + 前方停车距离 (和前方车辆的距离)

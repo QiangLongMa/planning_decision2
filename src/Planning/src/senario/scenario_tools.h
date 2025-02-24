@@ -25,4 +25,10 @@ namespace senarioTools{
                         int globalcloseindex, Eigen::MatrixXd &localpath,
                         Eigen::MatrixXd &globalPath, Eigen::VectorXd &vehicle_state, 
                         std::vector<Eigen::Vector4d>&optTrajsd);
+<<<<<<< HEAD
+=======
+
+    // 检测当前车道内是否有障碍物
+    bool CheckObstacleInLane(const std::vector<obses_sd> &obses_limit_SD);
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
 }

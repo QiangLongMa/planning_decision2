@@ -14,6 +14,10 @@ void FirstRun::Straight() {
     // 1 为找到局部路径 0为未找到
     frentPoint FrentPoint_;
     int first_run_index = 0;
+    std::cout<<"globalPath.size: "<<globalPath.cols()<<std::endl;
+    std::cout<<"indexinglobalpath: "<<indexinglobalpath_<<std::endl;
+    std::cout<<"gpsA_: "<<gpsA_<<std::endl;
+
     tool::cartesianToFrenet(car_, globalPath, FrentPoint_, first_run_index);
     double deltaYAW = tool::normalizeAngle(tool::d2r(car_(3)) - globalPath(3, first_run_index));
     double dl = (1 - globalPath(4, first_run_index) * FrentPoint_.d) * tan(deltaYAW);
@@ -26,6 +30,7 @@ void FirstRun::Straight() {
     LOCAL_.setPatam(gpsA_, car_(2), FrentPoint_.s, FrentPoint_.d, dl, ddl, globalPath, 30, 10, indexinglobalpath_, obses_limit_SD, GlobalcoordinatesystemObsesLimit,
                     start_l, end_l, delta_l, target_v, -1.5, Decisionflags_, 0, true, false, 0, 0); // 最后一位时最近障碍物的位置
     find_local_path_ = LOCAL_.GetoptTrajxy(lastOptTrajxy, lastOptTrajsd);
+    std::cout<<"find_local_path_: "<<find_local_path_<<std::endl;
     if (find_local_path_)
     { // 找到路径再进行之后的操作 确保初始时找到局部路径
         UpdateLocalPath();

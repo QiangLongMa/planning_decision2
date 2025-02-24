@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 cmake_minimum_required(VERSION 3.5)
+=======
+cmake_minimum_required(VERSION 3.16)
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
 project(hmi)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Default to C99

@@ -5,13 +5,21 @@ int main(int argc, char *argv[]){
     // kill ps
     //system("ps -a | grep gnss_node | awk '{print $1}' | xargs kill -9");
     system("ps -a | grep global_node | awk '{print $1}' | xargs kill -9");    
+<<<<<<< HEAD
     system("ps -a | grep local_node3 | awk '{print $1}' | xargs kill -9"); 
+=======
+    system("ps -a | grep planning_main_node | awk '{print $1}' | xargs kill -9"); 
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
     system("ps -a | grep image_pub | awk '{print $1}' | xargs kill -9");  
     system("ps -a | grep detect_node | awk '{print $1}' | xargs kill -9"); 
     system("ps -a | grep Lidar_Processing_node | awk '{print $1}' | xargs kill -9");  
     system("ps -a | grep demo_node | awk '{print $1}' | xargs kill -9");  
     //can_node
+<<<<<<< HEAD
     system("ps -a | grep canbus_node | awk '{print $1}' | xargs kill -9");  
+=======
+    system("ps -a | grep can_node | awk '{print $1}' | xargs kill -9");  
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
     system("ps -a | grep points_and_lines_publisher | awk '{print $1}' | xargs kill -9");   
     //调用了QApplication类的setSetuidAllowed函数，该函数用于设置是否允许以setuid的方式运行应用程序 
     QApplication::setSetuidAllowed(true);

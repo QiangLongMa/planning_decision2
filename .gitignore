@@ -11,6 +11,8 @@
 /devel/
 /install/
 /log/
+/output_txt/
+/*.txt
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
@@ -21,7 +23,9 @@ Makefile
 *.tmp
 
 # 编辑器、IDE 相关目录
-.vscode/
+.vscode/*
+# 但保留（取消忽略） launch.json
+!.vscode/launch.json
 .idea/
 
 # 临时文件

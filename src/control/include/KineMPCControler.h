@@ -33,7 +33,11 @@ private:
     // corner stiffness; rear
     double cr_ = 90000;
     // distance between front and rear wheel center
+<<<<<<< HEAD
     double wheelbase_ =3.0;
+=======
+    double wheelbase_ = 2.647;
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
     // mass of the vehicle
     double mass_ = 2500;
     // distance from front wheel center to COM

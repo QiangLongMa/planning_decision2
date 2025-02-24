@@ -26,8 +26,8 @@ PlanningProcess::PlanningProcess()
     speed_gears_subscribe_ = this->create_subscription<std_msgs::msg::Int64MultiArray>("speed_gears", 10, std::bind(&PlanningProcess::speed_gears_callback, this, std::placeholders::_1));
 
     // 发布局部路径到hmi
-    local_to_hmi_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("local_publisher ", 10);
-
+    local_to_hmi_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("local_publisher", 10);
+     
     // 发布路径到控制节点
     local_to_control_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("local_to_control", 10);
 
@@ -51,6 +51,8 @@ PlanningProcess::PlanningProcess()
 
     // 发布停止线标志
     pub_stop_line_ = this->create_publisher<std_msgs::msg::Float64>("pub_stop_line", 1);
+
+
 
     // 局部路径生成主函数
     timer_getlocalpath_ = this->create_wall_timer(std::chrono::milliseconds(Slowdowntimethreshold), std::bind(&PlanningProcess::get_local_path, this));
@@ -146,6 +148,9 @@ void PlanningProcess::SendGlobalObses(std::vector<Eigen::VectorXd> &obses)
 // gps的回调函数，生成主车的gps坐标
 void PlanningProcess::gps_callback(const std_msgs::msg::Float64MultiArray::SharedPtr msg)
 {
+    // 打印一下msg->data的维度
+    std::cout << "gps data size: " << msg->data.size() << std::endl;
+
     // 判断msg->data 是否是空的
     if (msg->data.empty())
     {
@@ -153,6 +158,7 @@ void PlanningProcess::gps_callback(const std_msgs::msg::Float64MultiArray::Share
         car_.resize(1, 1);
     }
     // 生成主车的gps坐标
+    else
     {
         gpsx_ = msg->data[0];
         gpsy_ = msg->data[1];
@@ -206,6 +212,7 @@ void PlanningProcess::lidar_callback(const std_msgs::msg::Float64MultiArray::Sha
         obs_lidar_.setOnes(5, 1);
         obs_lidar_ *= 1000;
     }
+    else
     {
         int cols = msg->data.size() / 5; // 有多少个障碍物信息
         obs_lidar_.resize(5, cols);
@@ -220,7 +227,7 @@ void PlanningProcess::lidar_callback(const std_msgs::msg::Float64MultiArray::Sha
         }
         else
         {
-            Eigen::MatrixXd T_obs_lidar(obs_lidar_.rows(), obs_lidar_.cols()); // 将雷达生成的障碍物膨胀，防止碰撞
+            T_obs_lidar.resize(obs_lidar_.rows(), obs_lidar_.cols()); // 将雷达生成的障碍物膨胀，防止碰撞
             double Expansiondistance = 0.2;                                    // 10cm *2 一共是二十厘米
             // 对第0、1行统一减去 Expansiondistance
             obs_lidar_.block(0, 0, 2, obs_lidar_.cols()).array() -= Expansiondistance;
@@ -276,10 +283,68 @@ void PlanningProcess::speed_gears_callback(const std_msgs::msg::Int64MultiArray:
 {
 }
 
-// 控制函数编写
-void PlanningProcess::timer_local_callback_to_control()
-{
+// 发布局部路径信息 
+void PlanningProcess::publish_localpath(Eigen::MatrixXd & localpath) {
+    /***********Only To Control Node*************/
+    std_msgs::msg::Float64MultiArray local_trajs_msg;
+    //检查矩阵optTrajxy是否所有元素都等于零。如果所有元素都等于零，整个表达式将返回true；否则返回false
+    if((localpath.array() != 0.0).any() == 0 ){
+        local_trajs_msg.data.push_back(-1);
+        local_to_control_publisher_->publish(local_trajs_msg);
+        local_to_hmi_publisher_->publish(local_trajs_msg);
+    } else {          
+        for (size_t i = 0; i < localpath.cols(); ++i){
+            localpath(8, i) = localpath(7, i) + heading_time_ + 0.1;
+        }
+        write_localpath(localpath);
+        std::vector<double> localTrajReshape(&localpath(0), localpath.data() + localpath.size());
+        local_trajs_msg.data = localTrajReshape;
+        local_trajs_msg.data.push_back(globalPath.cols());
+        local_trajs_msg.data.push_back(heading_time_);
+        local_to_control_publisher_->publish(local_trajs_msg);
+        //hmi 发送 
+        std_msgs::msg::Float64MultiArray local_trajs_msg2;  
+        std::vector<double> localTrajReshape2(&localpath(0), localpath.data() + localpath.size());
+        local_trajs_msg2.data = localTrajReshape2;
+        local_to_hmi_publisher_->publish(local_trajs_msg2);                 
+    }
 }
+
+void PlanningProcess::write_localpath (Eigen::MatrixXd &path) {
+                // 获取当前路径
+    char buffer[256];
+    // 获取当前路径
+    if (getcwd(buffer, sizeof(buffer)) != nullptr) {
+        std::cout << "当前路径是: " << buffer << std::endl;
+    } else {
+        std::cerr << "获取当前路径失败" << std::endl;
+    }
+        // 获取当前时间点
+    auto now = std::chrono::system_clock::now();
+    std::time_t now_time_t = std::chrono::system_clock::to_time_t(now);
+    std::tm* tm_info = std::localtime(&now_time_t);
+
+    // 格式化时间为字符串，格式为 yyyy-mm-dd_HH-MM-SS
+    char time_buffer[256];
+    std::strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%d_%H-%M-%S", tm_info);
+    // 检查local_path文件夹是否存在，如果不存在则创建
+    
+    std::string local_path_ = std::string(buffer) + "/local_path/";
+        // 生成时间作为文件夹名称
+    std::string folder_name = local_path_ + std::string(time_buffer);
+    static int loopCount = 1;
+    std::string fileName = folder_name + std::to_string(loopCount) + ".txt";
+    std::ofstream outFile;
+    outFile.open(fileName);
+    for(size_t i = 0; i < path.cols(); ++i){
+        outFile <<path(0,i)<<" "<<path(1,i)<<" "
+                <<path(2,i)<<" "<<path(3,i)<<" "
+                <<path(4,i)<<" "<<path(5,i)<<" "
+                <<path(6,i)<<" "<<path(7,i)<<std::endl;
+    }
+    loopCount=loopCount+1;      
+}
+
 
 /**
  * @brief 获取局部路径生成情况
@@ -292,6 +357,15 @@ void PlanningProcess::timer_local_callback_to_control()
 bool PlanningProcess::get_local_path()
 {
     // 如果 scenarioManager_ 不存在，则创建；否则更新数据
+
+    if (car_.size() == 0 || car_.size() == 1) {
+        return 0;
+    } 
+    if ((globalPath.array() != 0.0).any() == 0) {
+        std::cout << "Waiting global traj generates... " << std::endl;
+        return 0;
+    } 
+    heading_time_ = scenario_->Time();
     if (!scenario_manager_)
     {
         scenario_manager_ = std::make_unique<ScenarioManager>(car_, globalPath, obs_lidar_);
@@ -301,6 +375,11 @@ bool PlanningProcess::get_local_path()
         scenario_manager_->UpdateData(car_, globalPath, obs_lidar_);
     }
     state_ = scenario_manager_->Update();
+<<<<<<< HEAD
+=======
+    RCLCPP_INFO(this->get_logger(), "Current scenario state: %d", static_cast<int>(state_));
+    // 输出car_变量
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
     indexinglobalpath = scenario_manager_->GetIndex();
     // 根据senum class ScenarioState
     // {
@@ -326,7 +405,7 @@ bool PlanningProcess::get_local_path()
             // 获取路径
             optTrajxy = scenario_->getlocalpath();
             // 发送给控制端
-            timer_local_callback_to_control(); // TODO: 补充发送控制端的逻辑
+            publish_localpath(optTrajxy); // TODO: 补充发送控制端的逻辑
             return true;
         }
         break;
@@ -343,7 +422,7 @@ bool PlanningProcess::get_local_path()
             // 获取路径
             optTrajxy = scenario_->getlocalpath();
             // 发送给控制端
-            timer_local_callback_to_control();
+            publish_localpath(optTrajxy);
             return true;
         }
         break;
@@ -359,7 +438,7 @@ bool PlanningProcess::get_local_path()
             // 获取路径
             optTrajxy = scenario_->getlocalpath();
             // 发送给控制端
-            timer_local_callback_to_control();
+            publish_localpath(optTrajxy);
             return true;
         }
         break;
@@ -376,7 +455,7 @@ bool PlanningProcess::get_local_path()
             // 获取路径
             optTrajxy = scenario_->getlocalpath();
             // 发送给控制端
-            timer_local_callback_to_control(); // TODO: 补充发送控制端的逻辑
+            publish_localpath(optTrajxy); // TODO: 补充发送控制端的逻辑
             return true;
         }
         break;

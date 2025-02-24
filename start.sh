@@ -1,5 +1,10 @@
 #! /bin/bash
 
+<<<<<<< HEAD
+=======
+#! /bin/bash
+
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
 pid5=$(pgrep -f test1)
 if [ -n "$pid5" ]; then
     echo "Killing test1 process with PID $pid5"
@@ -8,12 +13,21 @@ else
     echo "test1 process not found."
 fi
 
+<<<<<<< HEAD
 pid6=$(pgrep -f canbus_node)
 if [ -n "$pid6" ]; then
     echo "Killing canbus_node process with PID $pid6"
     kill -15 $pid6
 else
     echo "canbus_node process not found."
+=======
+pid6=$(pgrep -f can_node)
+if [ -n "$pid6" ]; then
+    echo "Killing can_node process with PID $pid6"
+    kill -15 $pid6
+else
+    echo "can_node process not found."
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
 fi
 
 pid7=$(pgrep -f real_time_plot)
@@ -44,6 +58,7 @@ fi
 log_filename="${current_path}/output_txt/$(date +"%Y-%m-%d_%H-%M-%S").txt"
 # 打印生成的日志文件名
 echo "日志文件名是: $log_filename"
+<<<<<<< HEAD
 
 localpath="${current_path}/local_path"
 if [ ! -d "$localpath" ]; then
@@ -55,11 +70,21 @@ else
 fi
 # 运行第一个命令并将日志输出到动态命名的文件
 ros2 run hmi hmi -> "$log_filename" &
+=======
+# 运行第一个命令并将日志输出到动态命名的文件
+ros2 run hmi hmi -> "$log_filename" &   
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
 PID1=$!
 
 rviz2 -d ${current_path}/src/myrviz/default.rviz >/dev/null 2>&1  &
 PID2=$!
 
+<<<<<<< HEAD
+=======
+#ros2 bag play /home/ring/bag/rosbag2_2024_10_22-04_10_46/rosbag2_2024_10_22-04_10_46_0.db3 --loop
+
+
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
 # Optionally, you can wait for both commands to finish
 wait
 #Function to kill processes
@@ -83,12 +108,21 @@ kill_ros2_processes() {
         echo "points_and_lines_publisher process not found."
     fi
 
+<<<<<<< HEAD
     pid3=$(pgrep -f canbus_node)
     if [ -n "$pid3" ]; then
         echo "Killing canbus_node process with PID $pid3"
         kill -15 $pid3
     else
         echo "canbus_node process not found."
+=======
+    pid3=$(pgrep -f can_node)
+    if [ -n "$pid3" ]; then
+        echo "Killing can_node process with PID $pid3"
+        kill -15 $pid3
+    else
+        echo "can_node process not found."
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
     fi
 
     pid4=$(pgrep -f gnss_node)
@@ -115,9 +149,15 @@ kill_ros2_processes() {
         echo "real_time_plot process not found."
     fi
 
+<<<<<<< HEAD
     pidlocal=$(pgrep -f local_node4)
     if [ -n "$pidlocal" ]; then
         echo "Killing local_node4 process with PID $pidlocal"
+=======
+    pidlocal=$(pgrep -f planning_main_node)
+    if [ -n "$pidlocal" ]; then
+        echo "Killing planning_main_node process with PID $pidlocal"
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
         kill -15 $pidlocal
     else
         echo "local_node4 process not found."
@@ -134,3 +174,21 @@ trap "kill_ros2_processes" EXIT
 echo "Both commands started successfully. Waiting for processes to finish..."
 sleep 1
 echo "Exiting script."
+<<<<<<< HEAD
+=======
+
+
+# # 启动hmi
+# ros2 run hmi hmi
+
+# # 启动global节点
+# ros2 run global global_node
+
+# # 播放gps录制包，文件位于/home/ring/bag/rosbag2_2024_10_22-04_10_46/rosbag2_2024_10_22-04_10_46_0.db3
+# ros2 bag play /home/ring/bag/rosbag2_2024_10_22-04_10_46/rosbag2_2024_10_22-04_10_46_0.db3 --loop
+
+
+
+
+
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56

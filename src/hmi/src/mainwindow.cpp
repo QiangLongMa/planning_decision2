@@ -133,11 +133,19 @@ MainWindow::~MainWindow(){
     delete trunrviz;
     //system("ps -a | grep gnss_node | awk '{print $1}' | xargs kill -9");
     system("ps -a | grep global_node | awk '{print $1}' | xargs kill -15");    
+<<<<<<< HEAD
     system("ps -a | grep local_node3 | awk '{print $1}' | xargs kill -15"); 
     system("ps -a | grep image_pub | awk '{print $1}' | xargs kill -15");  
     system("ps -a | grep detect_node | awk '{print $1}' | xargs kill -15");    
     system("ps -a | grep control_node | awk '{print $1}' | xargs kill -15");
     system("ps -a | grep canbus_node | awk '{print $1}' | xargs kill -15");   
+=======
+    system("ps -a | grep planning_main_node | awk '{print $1}' | xargs kill -15"); 
+    system("ps -a | grep image_pub | awk '{print $1}' | xargs kill -15");  
+    system("ps -a | grep detect_node | awk '{print $1}' | xargs kill -15");    
+    system("ps -a | grep control_node | awk '{print $1}' | xargs kill -15");
+    system("ps -a | grep can_node | awk '{print $1}' | xargs kill -15");   
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
     system("ps -a | grep Lidar_Processing_node | awk '{print $1}' | xargs kill -15");  
     system("ps -a | grep demo_node | awk '{print $1}' | xargs kill -15");  
     system("ps -a | grep points_and_lines_publisher | awk '{print $1}' | xargs kill -15");  
@@ -180,11 +188,19 @@ void MainWindow::callrviz(){
 void MainWindow::closeEvent (QCloseEvent *event) {
    // system("ps -a | grep gnss_node | awk '{print $1}' | xargs kill -9");
     system("ps -a | grep global_node | awk '{print $1}' | xargs kill -15");
+<<<<<<< HEAD
     system("ps -a | grep local_node3 | awk '{print $1}' | xargs kill -15");
     system("ps -a | grep image_pub | awk '{print $1}' | xargs kill -15");  
     system("ps -a | grep detect_node | awk '{print $1}' | xargs kill -15");   
     system("ps -a | grep control_node | awk '{print $1}' | xargs kill -15");   
     system("ps -a | grep canbus_node | awk '{print $1}' | xargs kill -15"); 
+=======
+    system("ps -a | grep planning_main_node | awk '{print $1}' | xargs kill -15");
+    system("ps -a | grep image_pub | awk '{print $1}' | xargs kill -15");  
+    system("ps -a | grep detect_node | awk '{print $1}' | xargs kill -15");   
+    system("ps -a | grep control_node | awk '{print $1}' | xargs kill -15");   
+    system("ps -a | grep can_node | awk '{print $1}' | xargs kill -15"); 
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
     system("ps -a | grep Lidar_Processing_node | awk '{print $1}' | xargs kill -15");  
     system("ps -a | grep demo_node | awk '{print $1}' | xargs kill -15");     
     system("ps -a | grep points_and_lines_publisher | awk '{print $1}' | xargs kill -15");  

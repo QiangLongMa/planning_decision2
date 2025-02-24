@@ -25,7 +25,11 @@ find_package(osqp REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIRS})
 include_directories(${OPENCV_INCLUDE_DIRS})
 include_directories(./include)
+<<<<<<< HEAD
 find_package(canbus_msg REQUIRED)
+=======
+#find_package(ros2_path_interfaces REQUIRED)
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -55,7 +59,11 @@ target_include_directories(control_node PUBLIC
 target_link_libraries(control_node ${OpenCV_LIBS})
 target_link_libraries(control_node  osqp::osqp)
 #target_link_libraries(control_node ${OpenCV_LIBS} usbcan-4e)
+<<<<<<< HEAD
 ament_target_dependencies(control_node rclcpp std_msgs canbus_msg)
+=======
+ament_target_dependencies(control_node rclcpp std_msgs)
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
 #ament_target_dependencies(control_node rclcpp std_msgs ros2_path_interfaces)
 
 

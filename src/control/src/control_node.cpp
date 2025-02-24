@@ -26,7 +26,10 @@
 #include <chrono>
 #include"KineMPCControler.h"
 #include"controlmath.h"
+<<<<<<< HEAD
 #include"canbus_msg/msg/can_bus_msg.hpp"
+=======
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
 #define ts_ 0.01//0.01 car0.02 yijie
 #define cutoff_freq 20   //20  ///8  car yijie  
 class control_node : public rclcpp::Node{
@@ -49,7 +52,11 @@ class control_node : public rclcpp::Node{
             
             sub_lidar = this->create_subscription<std_msgs::msg::Float64MultiArray>("pub_control_obses", 1, std::bind(&control_node::lidar_callback, this, std::placeholders::_1));
 
+<<<<<<< HEAD
             pub_can = this->create_publisher<canbus_msg::msg::CanBusMsg>("/control_pub",1);
+=======
+            pub_can= this->create_publisher<std_msgs::msg::Float32MultiArray>("/control_pub",1);
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
 
             sub_DecelerateFlag = this->create_subscription<std_msgs::msg::Int32>("pub_DecelerateFlag", 5, std::bind(&control_node::subDecelerateFlag, this, std::placeholders::_1));
             sub_brake_flag = this->create_subscription<std_msgs::msg::Int32>("/brake_flag", 5, std::bind(&control_node::brakeflag_callback, this, std::placeholders::_1));
@@ -95,7 +102,11 @@ class control_node : public rclcpp::Node{
             if(run_stop_flag){
                 //没有局部路径规划 
                 if((interpolationoptTrajxy.array() != 0.0).any() == 0||interpolationoptTrajxy.cols()== 1) {
+<<<<<<< HEAD
                     std::cout<<"optTrajxy in None!!!"<<std::endl;
+=======
+                    //std::cout<<"optTrajxy in None!!!"<<std::endl;
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
                     newSpeedRef=0;    
                     return;
                 }
@@ -117,6 +128,7 @@ class control_node : public rclcpp::Node{
                     return;
                 }
                 if (first_vehicle_start_flag) {  //车辆首次启动的操作 
+<<<<<<< HEAD
                     current_a = vehicle_start_acc ;
                     if (car(2) > speed_threshold) {
                         first_vehicle_start_flag = false;
@@ -142,21 +154,92 @@ class control_node : public rclcpp::Node{
                         loncontroller_.Init(closestIndex, vehicle_state, localpath_time);
                         loncontroller_.ComputeControlCommand(interpolationoptTrajxy, a);
                         current_a = a;                                            
+=======
+                    current_v = current_v + vehicle_start_acc * 0.02;
+                    if (current_v > speed_threshold) {
+                        first_vehicle_start_flag = false;
+                    }
+                    newSpeedRef = std::round(current_v * 3.6); //四舍五入 
+                } else {
+                    //判断是否由静止转为起步  上一步标志为 true 当前帧为false 并且车辆静止 这仅仅是启动条件 
+                    //启动后 由replan_vehicle_start_flag标志符进行控制 
+                    if ((previous_DecelerateFlag && !DecelerateFlag && car(2) < 0.1) ||
+                        replan_vehicle_start_flag) {
+                        current_v = current_v + vehicle_start_acc * 0.02;
+                        replan_vehicle_start_flag = true;
+                        if (current_v > speed_threshold) {
+                            replan_vehicle_start_flag = false;
+                        } 
+                        newSpeedRef = std::round(current_v * 3.6); //四舍五入 
+                    } else {
+                        bool UES_PID = false;
+                        if(!UES_PID){
+                            int pre_closestIndex = std::min(static_cast<int>(interpolationoptTrajxy.cols()-1), closestIndex+1);
+                            double a = interpolationoptTrajxy(6,pre_closestIndex);
+                            double target_v = interpolationoptTrajxy(2,pre_closestIndex);
+                            if(std::abs(a) <= 0.01){//当前的加速度为0
+                                newSpeedRef = std::abs(target_v) * 3.6;//按照局部路径里的速度进行行驶
+                                if (car(2) < 0.1) {
+                                    current_v = 0.0;
+                                }
+                            } else {
+                                current_v = current_v + a * 0.02;// v =v +at 
+                                if(a > 0){
+                                    if(target_v==0){
+                                        current_v = std::min(current_v,target_v);// 不能超过设定的最大速度
+                                    }else{
+                                        current_v = std::min(current_v,target_v);// 不能超过设定的最大速度
+                                    }
+                                    newSpeedRef = std::ceil((current_v * 3.6));
+                                } else if ( a < 0 ) {
+                                    current_v = std::max(current_v,target_v);// 不能小于设定的最小速度
+                                    if(current_v < 0){
+                                        current_v = 0;
+                                    }
+                                    newSpeedRef = std::ceil((current_v *3.6));// 
+                                }
+                                //std::cout<<"newSpeedRef: "<<newSpeedRef<<std::endl;
+                            }
+                        } else {
+                            /******************PID************************/
+                            // x y theta v  a  解决不掉人为踩刹车 速度累加的行为 
+                            double a;
+                            std::tuple<double, double, double, double, double> vehicle_state;
+                            vehicle_state = std::make_tuple(car(0), car(1), car(3), car(2), gpsA);
+                            loncontroller_.Init(closestIndex, vehicle_state, localpath_time);
+                            loncontroller_.ComputeControlCommand(interpolationoptTrajxy, a);
+                            current_v = current_v + a * 0.02;
+                            if(current_v < 0) current_v = 0;
+                            newSpeedRef = std::round(current_v * 3.6);
+                        }                        
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
                     }
                 }
                 previous_DecelerateFlag = DecelerateFlag;
                 std_msgs::msg::Float32 speed_msg;
+<<<<<<< HEAD
                 speed_msg.data = car(2);
+=======
+                speed_msg.data = current_v;
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
                 pub_speed->publish(speed_msg);
                 /***********************转角**************************/
                 sw = CalculateSteerAngle(index);       
                 if((index > (maxIndex - 40))){
                     /****************************End Stop*******************************/
+<<<<<<< HEAD
                     SendBusCan(sw, -2, 1);
                     std::cout << "End-brake!!!" << std::endl;
                     std::cout << "car.v: " << car(2) << std::endl;
                     if(gpsS < 0.03){
                         SendBusCan(sw, -2, 1);
+=======
+                    SendCan(0,1,0,1,0);
+                    std::cout << "End-brake!!!" << std::endl;
+                    std::cout << "car.v: " << car(2) << std::endl;
+                    if(gpsS < 0.03){
+                        SendCan(0,1,1,1,0);
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
                         run_stop_flag = false;
                         std::cout << "End-Stop!!!" << std::endl;
                     }
@@ -165,9 +248,15 @@ class control_node : public rclcpp::Node{
                     std_msgs::msg::Float32MultiArray msg;
                     //接近局部路径的终点 车辆正在减速 3m的距离 
                     if (closestIndex > interpolationoptTrajxy.cols() - 2) { //也就是2m的距离
+<<<<<<< HEAD
                         SendBusCan(sw, -2, 1);
                     } else {
                         SendBusCan(sw, current_a, 2);
+=======
+                        SendCan(0,2,sw,1,1);  
+                    } else {
+                        SendCan(newSpeedRef,2,sw,0,1);    
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
                     }
                     // if(closestIndex>=static_cast<int>(optTrajxy.cols()-6)&&DecelerateFlag){//3m的距离 
                     //     SendCan(0,1,sw,1,1);//速度为0 刹车 
@@ -175,7 +264,11 @@ class control_node : public rclcpp::Node{
                 }                             
             }
             else{
+<<<<<<< HEAD
                 SendBusCan(0.0, 0, 1);
+=======
+                SendCan(0,1,0,1,0);
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
             }                 
         }
         
@@ -305,6 +398,7 @@ class control_node : public rclcpp::Node{
             }           
         }
 
+<<<<<<< HEAD
         void SendBusCan(double control_steer, double acc,
             int control_gear) {
             canbus_msg::msg::CanBusMsg msg;
@@ -328,6 +422,15 @@ class control_node : public rclcpp::Node{
             msg.steer_enable = 1;
             msg.gear_enable = 1;
             msg.light_enable = 0;
+=======
+        void SendCan(double speed,int gear,double sw_angle,int brake,int flag){
+            std_msgs::msg::Float32MultiArray msg;
+            msg.data.push_back(speed);//speed
+            msg.data.push_back(gear);//gear  0 p     1  n     2 d    3   r
+            msg.data.push_back(sw_angle);//sw_angle
+            msg.data.push_back(brake);//brake
+            msg.data.push_back(flag);//
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
             pub_can->publish(msg);
         }
         
@@ -419,8 +522,13 @@ class control_node : public rclcpp::Node{
             LQR.stateSpaceMatrix(A, B, car, cps, ref_delta, theta);
             //u = LQR.calcU(car, interpolationoptTrajxy, pre_closestIndex, A, B, Q, R)(1);
             u=LQR.calcU(car, interpolationoptTrajxy, Projection_point_message, A, B, Q, R)(1);
+<<<<<<< HEAD
             // std::cout<<"lqr_u: " <<  u <<std::endl;
             // std::cout<<"lqr_ref_delta: " << ref_delta <<std::endl;
+=======
+            std::cout<<"lqr_u: " <<  u <<std::endl;
+            std::cout<<"lqr_ref_delta: " << ref_delta <<std::endl;
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
 
             u = -(u+ref_delta);//-kx+kl
             // Q2 << 10      , 0    , 0,
@@ -429,7 +537,11 @@ class control_node : public rclcpp::Node{
             // R2 << 5;   
             // u = LQR.lqrComputeCommand(theta, deltaX, deltaY, deltaYAW, 
             //                         optTrajxy(4, pre_closestIndex), 3.0,car(4),0.01,Q2,R2);          
+<<<<<<< HEAD
             // std::cout<<"lqr: " << K * u <<std::endl;
+=======
+            std::cout<<"lqr: " << K * u <<std::endl;
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
             /***************方向盘限幅*****************/
             /**********MPC************/
             // std::tuple<double, double, double, double> vehicle_state = {car(0), car(1), tool::normalizeAngle(tool::d2r(car(3))), car(2)};
@@ -482,7 +594,11 @@ class control_node : public rclcpp::Node{
         // 声明speed_gears话题订阅者
         rclcpp::Subscription<std_msgs::msg::Int64MultiArray>::SharedPtr speed_gears_subscribe;
         //声明control话题发布者
+<<<<<<< HEAD
         rclcpp::Publisher<canbus_msg::msg::CanBusMsg>::SharedPtr pub_can;
+=======
+        rclcpp::Publisher<std_msgs::msg::Float32MultiArray>::SharedPtr pub_can;
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
 
         rclcpp::Subscription<std_msgs::msg::Float64MultiArray>::SharedPtr sub_global;
 
@@ -544,7 +660,11 @@ class control_node : public rclcpp::Node{
         Eigen::Matrix<double, 3, 3> Q_new;
         Eigen::Matrix<double, 1, 1> R_new;
         double u = 0.0; //
+<<<<<<< HEAD
         double K = 13; //
+=======
+        double K = 165; //
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
         /*****************************/
 
         /***********stanley****************/
@@ -554,7 +674,11 @@ class control_node : public rclcpp::Node{
         PID pid;
         /*********pure pursuit*****/
 
+<<<<<<< HEAD
         double pre_distance = 2 ;
+=======
+        double pre_distance =2 ;
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
 
         /********Can*********/
         int ret, ret2, ret3, ret4, ret5;
@@ -588,10 +712,17 @@ class control_node : public rclcpp::Node{
         std::ofstream ofs;  //创建输入流对象 
 
         bool DecelerateFlag = false;
+<<<<<<< HEAD
         double current_a;//车辆当前的加速度 
         loncontroller loncontroller_;
         double localpath_time;
         double swth = 410;
+=======
+        double current_v;//车辆当前的速度 
+        loncontroller loncontroller_;
+        double localpath_time;
+        double swth = 490;
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
         double Constant_deceleration = -0.5; 
         DigitalFilter digital_filter_;
 
@@ -604,8 +735,11 @@ class control_node : public rclcpp::Node{
         double vehicle_start_acc = 1;//起步加速度控制 1 m/s^s
         double speed_threshold = 1.38;//起步速度阈值 5km/h  
         bool previous_DecelerateFlag = false;
+<<<<<<< HEAD
 
         /************canbus*************/
+=======
+>>>>>>> 6a80d2887d19e67d9ce94b61132902778b175d56
 };
 
 
