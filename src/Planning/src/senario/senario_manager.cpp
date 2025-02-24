@@ -12,6 +12,8 @@ ScenarioState ScenarioManager::Update()
     {
     case ScenarioState::INIT:
         // 判断是否需要转弯
+        // 获取车在全局坐标下的最近匹配点
+        senarioTools::findClosestPoint(current_car_(0), current_car_(1), current_globalPath_, index);
         if (first_run_)
         {
             state_ = ScenarioState::INIT;

@@ -35,6 +35,12 @@ public:
 
     // 获取本周期的局部路径optTrajxy
     inline Eigen::MatrixXd getlocalpath() const { return optTrajxy;}
+    inline std::vector<Eigen::Vector4d> getlocalpathsd() const { return optTrajsd;}
+
+    // 更新本周期的局部路径optTrajxy
+    inline void setlocalpath(const Eigen::MatrixXd &localpath) { optTrajxy = localpath;}
+    inline void setlocalpath(const std::vector<Eigen::Vector4d> &localpath) { optTrajsd = localpath;}
+
 
     void UpdateLocalPath();
 

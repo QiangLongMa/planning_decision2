@@ -362,14 +362,6 @@ bool PlanningProcess::get_local_path()
         return false;
     }
     // 如果 scenarioManager_ 不存在，则创建；否则更新数据
-
-    if (car_.size() == 0 || car_.size() == 1) {
-        return 0;
-    } 
-    if ((globalPath.array() != 0.0).any() == 0) {
-        std::cout << "Waiting global traj generates... " << std::endl;
-        return 0;
-    } 
     heading_time_ = scenario_->Time();
     if (!scenario_manager_)
     {
@@ -406,6 +398,7 @@ bool PlanningProcess::get_local_path()
             scenario_manager_->ChangeFirstRun();
             // 获取路径
             optTrajxy = scenario_->getlocalpath();
+            optTrajsd = scenario_->getlocalpathsd();
             // 发送给控制端
             publish_localpath(optTrajxy); // TODO: 补充发送控制端的逻辑
             return true;
@@ -414,8 +407,13 @@ bool PlanningProcess::get_local_path()
     }
     case ScenarioState::STRAIGHT:
     {
+        RCLCPP_INFO(this->get_logger(), "ScenarioState::STRAIGHT");
         // 创建 LaneFollow 类的智能指针
+
         scenario_ = std::make_unique<LaneFollowScenario>(car_, globalPath, obses_limit_SD, GlobalcoordinatesystemObsesLimit, gpsA_, indexinglobalpath);
+        // 將optTrajxy赋予下一个规划的路径
+        scenario_->setlocalpath(optTrajxy);
+        scenario_->setlocalpath(optTrajsd);
         // 进行决策
         scenario_->MakeDecision();
         bool isLaneFollowSuccessful = scenario_->Process();
@@ -425,6 +423,7 @@ bool PlanningProcess::get_local_path()
             optTrajxy = scenario_->getlocalpath();
             // 发送给控制端
             publish_localpath(optTrajxy);
+            RCLCPP_INFO(this->get_logger(), "publish in STRAIGHT");
             return true;
         }
         break;

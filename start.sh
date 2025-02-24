@@ -1,7 +1,5 @@
 #! /bin/bash
 
-#! /bin/bash
-
 pid5=$(pgrep -f test1)
 if [ -n "$pid5" ]; then
     echo "Killing test1 process with PID $pid5"
