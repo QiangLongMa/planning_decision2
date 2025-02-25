@@ -27,7 +27,6 @@ PlanningProcess::PlanningProcess()
 
     // 发布局部路径到hmi
     local_to_hmi_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("local_publisher", 10);
-
     // 发布路径到控制节点
     local_to_control_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>("local_to_control", 10);
 

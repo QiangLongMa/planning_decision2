@@ -3,16 +3,14 @@ namespace senarioTools
 {
     /******************功能函数**************************/
 
-    void findClosestPoint(const double &x, const double &y, const Eigen::MatrixXd &path, int &carIndex)
+    void findClosestPoint(const double &x, const double &y, const Eigen::MatrixXd &globalPath, int &carIndex)
     {
-        int startIndex = 0;
-        int endIndex = static_cast<int>(path.cols());
+        int startIndex = std::max(carIndex - 10, 0);
+        int endIndex = std::min(carIndex + 120, static_cast<int>(globalPath.cols()));
         double distance, d_min = std::numeric_limits<double>::max();
-        double dx, dy;
-        for (int i = startIndex; i < endIndex; ++i) {
-            dx = path(0, i) - x;
-            dy = path(1, i) - y;
-            distance = dx * dx + dy * dy ;
+        for (int i = startIndex; i < endIndex; ++i)
+        {
+            distance = (std::pow(globalPath(0, i) - x, 2) + std::pow(globalPath(1, i) - y, 2));
             if (distance < d_min)
             {
                 carIndex = i;
