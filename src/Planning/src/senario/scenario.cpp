@@ -45,9 +45,18 @@ void Scenario::RestFlags(bool DriveStraightLineFlag_,
     Decisionflags_.righttoleftlane = righttoleftlane;       // 返回原车道决策
 }
 
-void Scenario::UpdateLocalPath() {
+void Scenario::Updated(const Eigen::VectorXd &car, const std::vector<obses_sd> &obses_limit_SD_, const std::vector<Eigen::VectorXd> &GlobalcoordinatesystemObsesLimit_, const double &gpsA, const double indexinglobalpath)
+{
+    car_ = car;
+    obses_limit_SD = obses_limit_SD_;
+    GlobalcoordinatesystemObsesLimit = GlobalcoordinatesystemObsesLimit_;
+    gpsA_ = gpsA;
+    indexinglobalpath_ = indexinglobalpath;
+}
+
+void Scenario::UpdateLocalPath()
+{
     optTrajxy.resize(lastOptTrajxy.rows(), lastOptTrajxy.cols());
     optTrajxy = lastOptTrajxy;
     optTrajsd = lastOptTrajsd;
 }
-

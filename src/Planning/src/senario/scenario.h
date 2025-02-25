@@ -43,7 +43,9 @@ public:
         optTrajxy = localpath;}
     inline void setlocalpath(const std::vector<Eigen::Vector4d> &localpath) { optTrajsd = localpath;}
 
-
+    void Updated(const Eigen::VectorXd &car, const std::vector<obses_sd> &obses_limit_SD_,
+        const std::vector<Eigen::VectorXd> &GlobalcoordinatesystemObsesLimit_,
+        const double &gpsA, const double indexinglobalpath);
     void UpdateLocalPath();
 
 protected:

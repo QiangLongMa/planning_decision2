@@ -41,12 +41,12 @@ bool LaneFollowScenario::Straight()
     RestFlags(true, false, false, false, false);
     LOCAL_.setPatam(gpsA_, speed, FrentPoint_.s, FrentPoint_.d, dl, ddl, globalPath, 30, 10, car_index, obses_limit_SD, GlobalcoordinatesystemObsesLimit,
                     start_l, end_l, delta_l, target_v, target_l, Decisionflags_, 0, true, false, 0, 0); // 最后一位时最近障碍物的位置
-    flag = LOCAL_.GetoptTrajxy(lastOptTrajxy, lastOptTrajsd);
-    if (flag)
+    find_local_path_ = LOCAL_.GetoptTrajxy(lastOptTrajxy, lastOptTrajsd);
+    if (find_local_path_)
     {
         UpdateLocalPath();
     }
-    return flag;
+    return find_local_path_;
 }
 
 // 避障
@@ -74,12 +74,12 @@ bool LaneFollowScenario::AvoidObstacle()
     RestFlags(false, false, false, true, false);
     LOCAL_.setPatam(gpsA_, speed, FrentPoint_.s, FrentPoint_.d, dl, ddl, globalPath, 30, 10, car_index, obses_limit_SD, GlobalcoordinatesystemObsesLimit,
                     start_l, end_l, delta_l, target_v, target_l, Decisionflags_, 0, true, false, 0, 0);
-    flag = LOCAL_.GetoptTrajxy(lastOptTrajxy, lastOptTrajsd);
-    if (flag)
+    find_local_path_ = LOCAL_.GetoptTrajxy(lastOptTrajxy, lastOptTrajsd);
+    if (find_local_path_)
     {
         UpdateLocalPath();
     }
-    return flag;
+    return find_local_path_;
 }
 void LaneFollowScenario::Overtake()
 {
@@ -137,12 +137,12 @@ bool LaneFollowScenario::DecelerateFollow()
         RestFlags(false, false, true, false, false);                     // 设置标志符
         LOCAL_.setPatam(gpsA_, speed, FrentPoint_.s, FrentPoint_.d, dl, ddl, globalPath, LengthLocalPath, LengthLocalPath, car_index, obses_limit_SD, GlobalcoordinatesystemObsesLimit,
                         start_l, end_l, delta_l, target_v, target_l, Decisionflags_, 0, false, false, 0, 0);
-        flag = LOCAL_.GetoptTrajxy(lastOptTrajxy, lastOptTrajsd);
-        if (flag)
+        find_local_path_ = LOCAL_.GetoptTrajxy(lastOptTrajxy, lastOptTrajsd);
+        if (find_local_path_)
         {
             UpdateLocalPath();
         }
-        return flag;
+        return find_local_path_;
     }
     else
     {
