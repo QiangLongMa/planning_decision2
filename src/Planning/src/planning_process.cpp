@@ -149,7 +149,7 @@ void PlanningProcess::SendGlobalObses(std::vector<Eigen::VectorXd> &obses)
 void PlanningProcess::gps_callback(const std_msgs::msg::Float64MultiArray::SharedPtr msg)
 {
     // 打印一下msg->data的维度
-    std::cout << "gps data size: " << msg->data.size() << std::endl;
+    //std::cout << "gps data size: " << msg->data.size() << std::endl;
 
     // 判断msg->data 是否是空的
     if (msg->data.empty())   
@@ -401,6 +401,7 @@ bool PlanningProcess::get_local_path()
             optTrajsd = scenario_->getlocalpathsd();
             // 发送给控制端
             publish_localpath(optTrajxy); // TODO: 补充发送控制端的逻辑
+            write_localpath(optTrajxy);
             return true;
         }
         break;
@@ -421,8 +422,10 @@ bool PlanningProcess::get_local_path()
         {
             // 获取路径
             optTrajxy = scenario_->getlocalpath();
+            optTrajsd = scenario_->getlocalpathsd();
             // 发送给控制端
             publish_localpath(optTrajxy);
+            write_localpath(optTrajxy);
             RCLCPP_INFO(this->get_logger(), "publish in STRAIGHT");
             return true;
         }

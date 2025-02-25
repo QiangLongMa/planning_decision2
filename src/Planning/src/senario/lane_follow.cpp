@@ -21,8 +21,10 @@ bool LaneFollowScenario::Straight()
     delta_l = 0.5;
     target_v = 10;
     frentPoint FrentPoint_;
-    int car_index;
+    int car_index = 0;
+    std ::cout<<"car_index: "<<car_index<<std::endl;
     senarioTools::findClosestPoint(car_(0), car_(1), optTrajxy, car_index);
+    std ::cout<<"after car_index: "<<car_index<<std::endl;
     senarioTools::cartofrenet(car_, optTrajxy, car_index, FrentPoint_);
     Eigen::VectorXd vehicle_state_(6);
     vehicle_state_ << car_(0), car_(1), car_(2), car_(3), car_(4), gpsA_;
@@ -30,6 +32,8 @@ bool LaneFollowScenario::Straight()
                                                                       optTrajxy, globalPath, vehicle_state_, optTrajsd);
     local_start_s = vehicle_state[0];
     local_start_l = vehicle_state[1];
+    std ::cout<<"local_start_s: "<<local_start_s<<std::endl;
+    std ::cout<<"local_start_l: "<<local_start_l<<std::endl;
     dl = vehicle_state[2];
     ddl = vehicle_state[3];
     speed = vehicle_state[4];
